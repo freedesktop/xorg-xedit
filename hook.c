@@ -388,9 +388,11 @@ LineEditAction(Widget w, XEvent *event, String *params, Cardinal *num_params)
 {
     XawTextBlock block;
 
-    if (international)
+    if (True) {
 	/* XXX FIXME */
+        fprintf(stderr, "LineEditAction: Not working in international mode.\n");
 	return;
+    }
 
     block.firstPos = 0;
     block.format = FMT8BIT;

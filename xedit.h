@@ -100,7 +100,6 @@ extern struct _app_resources {
 
 extern Widget topwindow, textwindow, labelwindow, filenamewindow, messwidget;
 extern Widget dirlabel, dirwindow;
-extern Boolean international;
 extern Boolean line_edit;
 
 /*	externals in xedit.c 	*/
@@ -132,9 +131,11 @@ void QuitAction(Widget, XEvent*, String*, Cardinal*);
 void DoSave(Widget, XtPointer, XtPointer);
 void SaveFile(Widget, XEvent*, String*, Cardinal*);
 void DoLoad(Widget, XtPointer, XtPointer);
+void DoPrint(Widget, XtPointer, XtPointer);
 void CancelFindFile(Widget, XEvent*, String*, Cardinal*);
 void FindFile(Widget, XEvent*, String*, Cardinal*);
 void LoadFile(Widget, XEvent*, String*, Cardinal*);
+void PrintFile(Widget, XEvent*, String*, Cardinal*);
 void FileCompletion(Widget, XEvent*, String*, Cardinal*);
 void KillFile(Widget, XEvent*, String*, Cardinal*);
 void DirWindowCB(Widget, XtPointer, XtPointer);
