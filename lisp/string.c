@@ -27,8 +27,8 @@
  * Author: Paulo César Pereira de Andrade
  */
 
-/* $XdotOrg: xc/programs/xedit/lisp/string.c,v 1.26 2003/11/27 17:28:43 paulo Exp $ */
-/* $XFree86: xc/programs/xedit/lisp/string.c,v 1.26 2003/11/27 17:28:43 paulo Exp $ */
+: /* $XdotOrg: xc/programs/xedit/lisp/string.c,v 1.26 2003/11/27 17:28:43 paulo Exp $ */
+/* $XFree86: xc/programs/xedit/lisp/string.c,v 1.24tsi Exp $ */
 
 #include "lisp/helper.h"
 #include "lisp/read.h"
