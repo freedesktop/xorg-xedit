@@ -24,7 +24,7 @@
  * used in advertising or publicity pertaining to distribution of the software
  * without specific, written prior permission.
  */
-/* $XFree86$ */
+/* $XFree86: xc/programs/xedit/util.c,v 1.27 2003/05/23 14:58:02 tsi Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>		/* for realpath() */

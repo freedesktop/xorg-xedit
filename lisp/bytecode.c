@@ -27,7 +27,7 @@
  * Author: Paulo César Pereira de Andrade
  */
 
-/* $XFree86$ */
+/* $XFree86: xc/programs/xedit/lisp/bytecode.c,v 1.18 2003/05/28 14:13:11 tsi Exp $ */
 
 
 /*

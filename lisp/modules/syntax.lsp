@@ -27,7 +27,7 @@
 ;; Author: Paulo César Pereira de Andrade
 ;;
 ;;
-;; $XFree86$
+;; $XFree86: xc/programs/xedit/lisp/modules/syntax.lsp,v 1.12 2004/01/08 21:29:11 paulo Exp $
 ;;
 
 (provide "syntax")

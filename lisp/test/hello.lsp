@@ -27,7 +27,7 @@
 ;; Author: Paulo César Pereira de Andrade
 ;;
 ;;
-;; $XFree86$
+;; $XFree86: xc/programs/xedit/lisp/test/hello.lsp,v 1.3 2002/11/08 08:01:01 paulo Exp $
 ;;
 (require "xaw")
 (require "xt")

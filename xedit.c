@@ -24,7 +24,7 @@
  * used in advertising or publicity pertaining to distribution of the software
  * without specific, written prior permission.
  */
-/* $XFree86$ */
+/* $XFree86: xc/programs/xedit/xedit.c,v 1.18 2002/11/10 23:21:57 paulo Exp $ */
 
 #include <X11/IntrinsicP.h>
 #include "xedit.h"

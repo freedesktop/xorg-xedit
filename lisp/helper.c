@@ -27,7 +27,7 @@
  * Author: Paulo César Pereira de Andrade
  */
 
-/* $XFree86$ */
+/* $XFree86: xc/programs/xedit/lisp/helper.c,v 1.51 2003/09/17 22:28:08 paulo Exp $ */
 
 #include "lisp/helper.h"
 #include "lisp/pathname.h"

@@ -27,7 +27,7 @@
  * Author: Paulo César Pereira de Andrade
  */
 
-/* $XFree86$ */
+/* $XFree86: xc/programs/xedit/lisp/modules/x11.c,v 1.12 2003/04/27 18:17:37 tsi Exp $ */
 
 #include <stdlib.h>
 #include <string.h>

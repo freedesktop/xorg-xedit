@@ -27,7 +27,7 @@
 ;; Author: Paulo César Pereira de Andrade
 ;;
 ;;
-;; $XFree86$
+;; $XFree86: xc/programs/xedit/lisp/modules/lisp.lsp,v 1.10 2002/12/20 04:32:47 paulo Exp $
 ;;
 (provide "lisp")
 

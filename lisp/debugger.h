@@ -27,7 +27,7 @@
  * Author: Paulo César Pereira de Andrade
  */
 
-/* $XFree86$ */
+/* $XFree86: xc/programs/xedit/lisp/debugger.h,v 1.8 2003/04/27 18:17:32 tsi Exp $ */
 
 #ifndef Lisp_debugger_h
 #define Lisp_debugger_h

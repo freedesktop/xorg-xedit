@@ -27,7 +27,7 @@
  * Author: Paulo César Pereira de Andrade
  */
 
-/* $XFree86$ */
+/* $XFree86: xc/programs/xedit/lisp/re/re.h,v 1.2 2002/09/23 01:25:41 paulo Exp $ */
 
 #include <stdlib.h>
 #include <string.h>

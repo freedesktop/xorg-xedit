@@ -27,7 +27,7 @@
  * Author: Paulo César Pereira de Andrade
  */
 
-/* $XFree86$ */
+/* $XFree86: xc/programs/xedit/lisp/regex.c,v 1.11 2003/04/27 18:17:34 tsi Exp $ */
 
 #include "lisp/regex.h"
 #include "lisp/private.h"
