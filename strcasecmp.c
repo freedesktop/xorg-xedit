@@ -1,4 +1,4 @@
-/* $XFree86: xc/programs/xedit/strcasecmp.c,v 1.3 2002/02/10 02:50:05 paulo Exp $ */
+/* $XFree86$ */
 
 #include <ctype.h>
 #include <sys/types.h>

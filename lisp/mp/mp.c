@@ -27,7 +27,7 @@
  * Author: Paulo César Pereira de Andrade
  */
 
-/* $XFree86: xc/programs/xedit/lisp/mp/mp.c,v 1.3 2002/11/20 07:44:43 paulo Exp $ */
+/* $XFree86$ */
 
 #include "mp.h"
 
