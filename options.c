@@ -349,11 +349,11 @@ CreateColumnsShell(void)
     XtCreateManagedWidget("leftLabel", labelWidgetClass, form, NULL, 0);
     left_text		= XtVaCreateManagedWidget("left", asciiTextWidgetClass,
 						  form, XtNeditType, XawtextEdit,
-						  NULL, 0);
+						  NULL);
     XtCreateManagedWidget("rightLabel", labelWidgetClass, form, NULL, 0);
     right_text		= XtVaCreateManagedWidget("right", asciiTextWidgetClass,
 						  form, XtNeditType, XawtextEdit,
-						  NULL, 0);
+						  NULL);
     ok			= XtCreateManagedWidget("ok", commandWidgetClass,
 						form, NULL, 0);
     XtAddCallback(ok, XtNcallback, ProcessColumnsCallback, (XtPointer)True);

@@ -27,7 +27,7 @@
  * Author: Paulo César Pereira de Andrade
  */
 
-/* $XdotOrg: xc/programs/xedit/ispell.c,v 1.5 2004/09/02 08:40:32 kem Exp $ */
+/* $XdotOrg: xc/programs/xedit/ispell.c,v 1.6 2004/12/04 00:43:13 kuhn Exp $ */
 /* $XFree86: xc/programs/xedit/ispell.c,v 1.19 2002/10/19 20:04:20 herrb Exp $ */
 
 #include "xedit.h"
@@ -2053,7 +2053,7 @@ InitIspell(void)
     ispell.text		= XtVaCreateManagedWidget("text", asciiTextWidgetClass,
 						ispell.form,
 						XtNeditType, XawtextEdit,
-						NULL, 0);
+						NULL);
     ispell.suggestions	= XtCreateManagedWidget("suggestions", labelWidgetClass,
 						ispell.form, NULL, 0);
     ispell.viewport	= XtCreateManagedWidget("viewport", viewportWidgetClass,
@@ -2099,7 +2099,7 @@ InitIspell(void)
     ispell.terse	= XtVaCreateManagedWidget("terse", toggleWidgetClass,
 						  ispell.commands,
 						  XtNstate, ispell.terse_mode,
-						  NULL, 0);
+						  NULL);
     XtAddCallback(ispell.terse, XtNcallback, ToggleTerseIspell, NULL);
     ispell.status	= XtCreateManagedWidget("status", labelWidgetClass,
 						ispell.form, NULL, 0);
@@ -2108,7 +2108,7 @@ InitIspell(void)
     ispell.dict		= XtVaCreateManagedWidget("dict", menuButtonWidgetClass,
 						  ispell.options,
 						  XtNmenuName, "dictionaries",
-						  NULL, 0);
+						  NULL);
     ispell.dictMenu	= XtCreatePopupShell("dictionaries", simpleMenuWidgetClass,
 					     ispell.options, NULL, 0);
     XtRealizeWidget(ispell.dictMenu);
@@ -2116,7 +2116,7 @@ InitIspell(void)
     ispell.format	= XtVaCreateManagedWidget("format", menuButtonWidgetClass,
 						  ispell.options,
 						  XtNmenuName, "formats",
-						  NULL, 0);
+						  NULL);
     ispell.formatMenu	= XtCreatePopupShell("formats", simpleMenuWidgetClass,
 					     ispell.options, NULL, 0);
     XtRealizeWidget(ispell.formatMenu);
