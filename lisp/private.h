@@ -27,7 +27,7 @@
  * Author: Paulo César Pereira de Andrade
  */
 
-: /* $XdotOrg: xc/programs/xedit/lisp/private.h,v 1.42 2003/12/17 17:45:33 dawes Exp $ */
+/* $XdotOrg: xc/programs/xedit/lisp/private.h,v 1.1.4.2.4.1 2004/03/04 17:48:57 eich Exp $ */
 /* $XFree86: xc/programs/xedit/lisp/private.h,v 1.41 2003/05/27 22:27:04 tsi Exp $ */
 
 #ifndef Lisp_private_h
