@@ -1,3 +1,4 @@
+/* $XdotOrg$ */
 /*
  * Copyright (c) 2001 by The XFree86 Project, Inc.
  *
