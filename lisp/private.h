@@ -27,7 +27,7 @@
  * Author: Paulo César Pereira de Andrade
  */
 
-/* $XFree86: xc/programs/xedit/lisp/private.h,v 1.39 2002/12/20 04:32:46 paulo Exp $ */
+/* $XFree86: xc/programs/xedit/lisp/private.h,v 1.41 2003/05/27 22:27:04 tsi Exp $ */
 
 #ifndef Lisp_private_h
 #define Lisp_private_h
@@ -38,15 +38,15 @@
 #include <setjmp.h>
 #include <unistd.h>
 #include <sys/time.h>
-#include "internal.h"
+#include "lisp/internal.h"
 
-#include "core.h"
+#include "lisp/core.h"
 #ifdef DEBUGGER
-#include "debugger.h"
+#include "lisp/debugger.h"
 #endif
-#include "helper.h"
-#include "string.h"
-#include "struct.h"
+#include "lisp/helper.h"
+#include "lisp/string.h"
+#include "lisp/struct.h"
 
 /*
  * Defines
@@ -55,10 +55,10 @@
 #define MULTIPLE_VALUES_LIMIT	127
 #define MAX_STACK_DEPTH		16384
 
-#define FEATURES						\
-    lisp__data.features->data.atom->a_object ?			\
-	lisp__data.features->data.atom->property->value :	\
-	NIL
+#define FEATURES							\
+    (lisp__data.features->data.atom->a_object ?				\
+	(LispObj *)lisp__data.features->data.atom->property->value :	\
+	NIL)
 #define PACK	lisp__data.packlist
 #define PACKAGE	lisp__data.package->data.atom->property->value
 #define MOD	lisp__data.modlist
