@@ -27,7 +27,7 @@
  * Author: Paulo César Pereira de Andrade
  */
 
-/* $XFree86: xc/programs/xedit/lisp/string.c,v 1.25 2003/05/27 22:27:04 tsi Exp $ */
+/* $XFree86: xc/programs/xedit/lisp/string.c,v 1.26 2003/11/27 17:28:43 paulo Exp $ */
 
 #include "lisp/helper.h"
 #include "lisp/read.h"
@@ -368,7 +368,7 @@ Lisp_Char(LispBuiltin *builtin)
  schar simple-string index
  */
 {
-    char *string;
+    unsigned char *string;
     long offset, length;
 
     LispObj *ostring, *oindex;
@@ -379,7 +379,7 @@ Lisp_Char(LispBuiltin *builtin)
     CHECK_STRING(ostring);
     CHECK_INDEX(oindex);
     offset = FIXNUM_VALUE(oindex);
-    string = THESTR(ostring);
+    string = (unsigned char*)THESTR(ostring);
     length = STRLEN(ostring);
 
     if (offset >= length)
