@@ -24,10 +24,10 @@
 ;; dealings in this Software without prior written authorization from the
 ;; XFree86 Project.
 ;;
-;; Author: Paulo César Pereira de Andrade
+;; Author: Paulo CÃ©sar Pereira de Andrade
 ;;
 ;;
-;; $XdotOrg: xc/programs/xedit/lisp/modules/xedit.lsp,v 1.11 2003/12/11 16:03:30 paulo Exp $
+;; $XdotOrg: xc/programs/xedit/lisp/modules/xedit.lsp,v 1.2 2004/04/23 19:54:45 eich Exp $
 ;; $XFree86: xc/programs/xedit/lisp/modules/xedit.lsp,v 1.9 2003/01/16 03:50:46 paulo Exp $
 ;;
 
