@@ -83,6 +83,8 @@ MakeCommandButton(Widget box, char *name, XtCallbackProc function)
   Widget w = XtCreateManagedWidget(name, commandWidgetClass, box, NULL, ZERO);
   if (function != NULL)
     XtAddCallback(w, XtNcallback, function, (caddr_t) NULL);
+  else
+    XtVaSetValues(w, XtNsensitive, False, NULL);
   return w;
 }
 
