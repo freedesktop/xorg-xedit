@@ -27,7 +27,7 @@
  * Author: Paulo César Pereira de Andrade
  */
 
-/* $XFree86: xc/programs/xedit/hook.c,v 1.9 2003/01/08 05:07:40 paulo Exp $ */
+/* $XFree86: xc/programs/xedit/hook.c,v 1.10 2003/01/09 03:36:29 paulo Exp $ */
 
 /*
  * This file is intended to be used to add all the necessary hooks to xedit
