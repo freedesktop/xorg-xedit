@@ -41,7 +41,6 @@ static XtActionsRec actions[] = {
 {"quit", QuitAction},
 {"save-file", SaveFile},
 {"load-file", LoadFile},
-{"print-file", PrintFile},
 {"find-file", FindFile},
 {"cancel-find-file", CancelFindFile},
 {"file-completion", FileCompletion},
@@ -72,6 +71,7 @@ static XawTextPositionInfo infos[3];
 Widget topwindow, textwindow, messwidget, labelwindow, filenamewindow;
 Widget scratch, hpane, vpanes[2], labels[3], texts[3], forms[3], positions[3];
 Widget options_popup, dirlabel, dirwindow;
+Boolean international;
 Boolean line_edit;
 XawTextWrapMode wrapmodes[3];
 
@@ -111,11 +111,6 @@ static XtResource resources[] = {
 
 #undef Offset
 
-String fallback_resources[] = {
-    "*international:     True", /* set this globally for ALL widgets to avoid wiered crashes */
-    NULL
-};
-
 int
 main(int argc, char *argv[])
 {
@@ -123,7 +118,7 @@ main(int argc, char *argv[])
   unsigned num_loaded = 0;
 
   XtSetLanguageProc(NULL, NULL, NULL);
-  topwindow = XtAppInitialize(&appcon, "Xedit", NULL, 0, &argc, argv, fallback_resources, NULL, 0);
+  topwindow = XtAppInitialize(&appcon, "Xedit", NULL, 0, &argc, argv, NULL, NULL, 0);
 
   XtAppAddActions(appcon, actions, XtNumber(actions));
   XtOverrideTranslations
@@ -245,8 +240,9 @@ main(int argc, char *argv[])
 		  flags = 0;
 		  XtSetArg(args[num_args], XtNstring, NULL);	num_args++;
 	      }
-	      source = XtVaCreateWidget("textSource",
-					multiSrcObjectClass, topwindow,
+	      source = XtVaCreateWidget("textSource", international ?
+					multiSrcObjectClass
+					: asciiSrcObjectClass, topwindow,
 					XtNtype, XawAsciiFile,
 					XtNeditType, XawtextEdit,
 					NULL, NULL);
@@ -306,7 +302,6 @@ makeButtonsAndBoxes(Widget parent)
 	MakeCommandButton(b_row, "quit", DoQuit);
 	MakeCommandButton(b_row, "save", DoSave);
 	MakeCommandButton(b_row, "load", DoLoad);
-	MakeCommandButton(b_row, "print", DoPrint);
 	filenamewindow = MakeStringBox(b_row, "filename", NULL);
     }
     hintswindow = XtCreateManagedWidget("bc_label", labelWidgetClass,
@@ -352,10 +347,15 @@ makeButtonsAndBoxes(Widget parent)
     textwindow =  XtCreateManagedWidget(editWindow, asciiTextWidgetClass,
 					vpanes[0], arglist, num_args);
     num_args = 0;
+    XtSetArg(arglist[num_args], XtNinternational, &international);	++num_args;
+    XtGetValues(textwindow, arglist, num_args);
+
+    num_args = 0;
     XtSetArg(arglist[num_args], XtNtype, XawAsciiFile);			++num_args;
     XtSetArg(arglist[num_args], XtNeditType, XawtextEdit);		++num_args;
-    scratch = XtVaCreateWidget("textSource",
-			       multiSrcObjectClass, topwindow,
+    scratch = XtVaCreateWidget("textSource", international ?
+			       multiSrcObjectClass
+			       : asciiSrcObjectClass, topwindow,
 			       XtNtype, XawAsciiFile,
 			       XtNeditType, XawtextEdit,
 			       NULL, NULL);

@@ -938,7 +938,10 @@ IspellSend(void)
 	    return (-1);
 	}
 	for (i = 0; i < block.length; i++) {
-  	    wctomb(mb, ((wchar_t*)block.ptr)[i]);
+	    if (international)
+		wctomb(mb, ((wchar_t*)block.ptr)[i]);
+	    else
+		*mb = block.ptr[i];
 	    if (amplen) {
 		if (amplen + 2 >= sizeof(ampbuf)) {
 		    if (!ispell.terse_mode)
@@ -1036,7 +1039,10 @@ IspellSend(void)
 	    return (-1);
 	}
 	for (i = 0; i < block.length; i++) {
-	    wctomb(mb, ((wchar_t*)block.ptr)[i]);
+	    if (international)
+		wctomb(mb, ((wchar_t*)block.ptr)[i]);
+	    else
+		*mb = block.ptr[i];
 	    if (amplen) {
 		if (amplen + 2 >= sizeof(ampbuf)) {
 		    if (!ispell.terse_mode)
@@ -1560,12 +1566,18 @@ ReplaceIspell(Widget w, XtPointer client_data, XtPointer call_data)
 		char mb[sizeof(wchar_t)];
 
 		if (XawTextSourceRead(ispell.source, pos - 1, &check, 1) > 0) {
-		    wctomb(mb, *(wchar_t*)check.ptr);
+		    if (international)
+			wctomb(mb, *(wchar_t*)check.ptr);
+		    else
+			*mb = *check.ptr;
 		    do_replace = !isalpha(*mb) && *mb && !strchr(ispell.wchars, *mb);
 		}
 		if (do_replace &&
 		    XawTextSourceRead(ispell.source, pos + search.length, &check, 1) > 0) {
-		    wctomb(mb, *(wchar_t*)check.ptr);
+		    if (international)
+			wctomb(mb, *(wchar_t*)check.ptr);
+		    else
+			*mb = *check.ptr;
 		    do_replace = !isalpha(*mb) && *mb && !strchr(ispell.wchars, *mb);
 		}
 		if (do_replace) {

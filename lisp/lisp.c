@@ -46,8 +46,7 @@
 #endif
 
 #if defined(linux)
-/* kernel header doesn't work with -ansi */
-/* #include <asm/page.h> */	/* for PAGE_SIZE */
+#include <asm/page.h>	/* for PAGE_SIZE */
 #define HAS_GETPAGESIZE
 #define HAS_SC_PAGESIZE	/* _SC_PAGESIZE may be an enum for Linux */
 #endif
