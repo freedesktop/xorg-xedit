@@ -549,6 +549,13 @@ typedef struct {
     LispObj *errorp;		/* ALWAYS (ONLY) READABLE: stderr of program */
 } LispPipe;
 
+/* silly IBM compiler */
+#ifdef AIXV5 /* probably want !gcc too */
+#define LispType int
+#define LispFunType int
+#define LispStreamType int
+#endif
+
 struct _LispObj {
     LispType type : 6;
     unsigned int mark : 1;	/* gc protected */
@@ -641,6 +648,11 @@ struct _LispObj {
 	} hash;
     } data;
 };
+#ifdef AIXV5
+#undef LispType
+#undef LispFunType
+#undef LispStreamType
+#endif
 
 typedef	LispObj *(*LispFunPtr)(LispBuiltin*);
 typedef void (*LispComPtr)(LispCom*, LispBuiltin*);
