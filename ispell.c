@@ -27,7 +27,7 @@
  * Author: Paulo César Pereira de Andrade
  */
 
-/* $XdotOrg: xc/programs/xedit/ispell.c,v 1.2 2004/04/23 19:54:43 eich Exp $ */
+/* $XdotOrg: xc/programs/xedit/ispell.c,v 1.3 2004/05/30 22:44:00 gisburn Exp $ */
 /* $XFree86: xc/programs/xedit/ispell.c,v 1.19 2002/10/19 20:04:20 herrb Exp $ */
 
 #include "xedit.h"
@@ -825,7 +825,7 @@ IspellConvertHtmlAmp(char *buf)
 	else if (*buf == '#') {
 	    char *tmp;
 
-	    if (len == 1);
+	    if (len == 1)
 		return ('?');
 	    ch = strtol(&buf[1], &tmp, 10);
 	    if (*tmp)
@@ -938,10 +938,7 @@ IspellSend(void)
 	    return (-1);
 	}
 	for (i = 0; i < block.length; i++) {
-	    if (international)
-		wctomb(mb, ((wchar_t*)block.ptr)[i]);
-	    else
-		*mb = block.ptr[i];
+  	    wctomb(mb, ((wchar_t*)block.ptr)[i]);
 	    if (amplen) {
 		if (amplen + 2 >= sizeof(ampbuf)) {
 		    if (!ispell.terse_mode)
@@ -1039,10 +1036,7 @@ IspellSend(void)
 	    return (-1);
 	}
 	for (i = 0; i < block.length; i++) {
-	    if (international)
-		wctomb(mb, ((wchar_t*)block.ptr)[i]);
-	    else
-		*mb = block.ptr[i];
+	    wctomb(mb, ((wchar_t*)block.ptr)[i]);
 	    if (amplen) {
 		if (amplen + 2 >= sizeof(ampbuf)) {
 		    if (!ispell.terse_mode)
@@ -1566,18 +1560,12 @@ ReplaceIspell(Widget w, XtPointer client_data, XtPointer call_data)
 		char mb[sizeof(wchar_t)];
 
 		if (XawTextSourceRead(ispell.source, pos - 1, &check, 1) > 0) {
-		    if (international)
-			wctomb(mb, *(wchar_t*)check.ptr);
-		    else
-			*mb = *check.ptr;
+		    wctomb(mb, *(wchar_t*)check.ptr);
 		    do_replace = !isalpha(*mb) && *mb && !strchr(ispell.wchars, *mb);
 		}
 		if (do_replace &&
 		    XawTextSourceRead(ispell.source, pos + search.length, &check, 1) > 0) {
-		    if (international)
-			wctomb(mb, *(wchar_t*)check.ptr);
-		    else
-			*mb = *check.ptr;
+		    wctomb(mb, *(wchar_t*)check.ptr);
 		    do_replace = !isalpha(*mb) && *mb && !strchr(ispell.wchars, *mb);
 		}
 		if (do_replace) {
