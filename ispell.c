@@ -27,7 +27,7 @@
  * Author: Paulo César Pereira de Andrade
  */
 
-/* $XdotOrg: xc/programs/xedit/ispell.c,v 1.20 2003/12/19 02:05:39 dawes Exp $ */
+/* $XdotOrg: xc/programs/xedit/ispell.c,v 1.2 2004/04/23 19:54:43 eich Exp $ */
 /* $XFree86: xc/programs/xedit/ispell.c,v 1.19 2002/10/19 20:04:20 herrb Exp $ */
 
 #include "xedit.h"
