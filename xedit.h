@@ -29,6 +29,8 @@
 /* $XFree86: xc/programs/xedit/xedit.h,v 1.17 2002/10/06 17:11:39 paulo Exp $ */
 
 #include <stdio.h>
+#include <stdarg.h>
+#include <stdio.h>
 #include <X11/Intrinsic.h>
 #include <X11/StringDefs.h>
 #include <X11/cursorfont.h>
@@ -106,7 +108,7 @@ extern Boolean line_edit;
 void Feep(void);
 
 /*	externals in util.c 	*/
-void XeditPrintf(char*);
+void XeditPrintf(const char *format, ...);
 Widget MakeCommandButton(Widget, char*, XtCallbackProc);
 Widget MakeStringBox(Widget, String, String);
 String GetString(Widget);
