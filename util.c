@@ -76,6 +76,7 @@ XeditPrintf(const char *format, ...)
     va_list       va,
                   va2;
     XawTextBlock  text;
+    XawTextPosition pos;
     
     va_start(va, format);
 
@@ -92,7 +93,7 @@ XeditPrintf(const char *format, ...)
     
     va_end(va);
     
-    XawTextPosition pos = XawTextSourceScan(XawTextGetSource(messwidget),
+    pos = XawTextSourceScan(XawTextGetSource(messwidget),
 					    0, XawstAll, XawsdRight, 1, True);
 
     text.length = strlen(str);
