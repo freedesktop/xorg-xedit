@@ -101,8 +101,8 @@ libre_a_SOURCES = \
 #     xedit
 #   
 
-xedit_CFLAGS = $(DEP_CFLAGS) -I$(top_srcdir)/lisp/re -D_BSD_SOURCE -DXEDIT -DINCLUDE_XPRINT_SUPPORT
-xedit_LDADD = $(DEP_LIBS) libre.a liblisp.a libmp.a -lm
+xedit_CFLAGS = $(XEDIT_CFLAGS) -I$(top_srcdir)/lisp/re -D_BSD_SOURCE -DXEDIT -DINCLUDE_XPRINT_SUPPORT
+xedit_LDADD = $(XEDIT_LIBS) libre.a liblisp.a libmp.a -lm
 
 xedit_SOURCES =	\
         commands.c \
