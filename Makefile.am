@@ -37,7 +37,7 @@ libmp_a_SOURCES = \
 #    liblisp.a
 #
 
-liblisp_a_CFLAGS = -I$(top_srcdir)/lisp/re -I$(top_srcdir)/lisp/mp -DLISP -DLISPDIR=\"$(libdir)/X11/xedit/lisp\"
+liblisp_a_CFLAGS = -I$(top_srcdir)/lisp/re -I$(top_srcdir)/lisp/mp -DLISP -DLISPDIR=\"$(libdir)/X11/xedit/lisp\" $(XEDIT_CFLAGS)
 liblisp_a_LIBADD = libmp.a
 liblisp_a_SOURCES = \
 	lisp/bytecode.c \
@@ -144,7 +144,9 @@ Xedit.ad:
 	cp $(top_srcdir)/Xedit-noxprint.ad Xedit.ad
 endif
 
-$(APPDEFAULTFILES): %: %.ad
+SUFFIXES = .ad 
+
+.ad:
 	cp $< $@
 
 appdefault_DATA = $(APPDEFAULTFILES)
