@@ -19,6 +19,9 @@
 #  TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 #  PERFORMANCE OF THIS SOFTWARE.
 
+XEDITDIR = ${libdir}/X11/xedit
+lispdir = ${XEDITDIR}/lisp
+
 bin_PROGRAMS = xedit
 noinst_LIBRARIES = liblisp.a libre.a libmp.a
 
@@ -37,7 +40,7 @@ libmp_a_SOURCES = \
 #    liblisp.a
 #
 
-liblisp_a_CFLAGS = -I$(top_srcdir)/lisp/re -I$(top_srcdir)/lisp/mp -DLISP -DLISPDIR=\"$(libdir)/X11/xedit/lisp\" $(XEDIT_CFLAGS)
+liblisp_a_CFLAGS = -I$(top_srcdir)/lisp/re -I$(top_srcdir)/lisp/mp -DLISP -DLISPDIR=\"$(lispdir)\" $(XEDIT_CFLAGS)
 liblisp_a_LIBADD = libmp.a
 liblisp_a_SOURCES = \
 	lisp/bytecode.c \
@@ -156,7 +159,26 @@ EXTRA_DIST = lisp/compile.c Xedit-color.ad				\
 		./lisp/env.c						\
 	 	lisp/mathimp.c
 
+lisp_DATA = ${srcdir}/lisp/modules/lisp.lsp \
+	${srcdir}/lisp/modules/xedit.lsp \
+	${srcdir}/lisp/modules/syntax.lsp \
+	${srcdir}/lisp/modules/indent.lsp
 
+progmodesdir = ${lispdir}/progmodes 
+
+progmodes_DATA = ${srcdir}/lisp/modules/progmodes/c.lsp \
+	${srcdir}/lisp/modules/progmodes/html.lsp \
+	${srcdir}/lisp/modules/progmodes/imake.lsp \
+	${srcdir}/lisp/modules/progmodes/lisp.lsp \
+	${srcdir}/lisp/modules/progmodes/make.lsp \
+	${srcdir}/lisp/modules/progmodes/man.lsp \
+	${srcdir}/lisp/modules/progmodes/patch.lsp \
+	${srcdir}/lisp/modules/progmodes/rpm.lsp \
+	${srcdir}/lisp/modules/progmodes/sgml.lsp \
+	${srcdir}/lisp/modules/progmodes/sh.lsp \
+	${srcdir}/lisp/modules/progmodes/xconf.lsp \
+	${srcdir}/lisp/modules/progmodes/xlog.lsp \
+	${srcdir}/lisp/modules/progmodes/xrdb.lsp
 
 CLEANFILES = $(APPDEFAULTFILES) Xedit.ad
 
