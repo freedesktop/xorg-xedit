@@ -1,0 +1,4 @@
+2005-09-27  Adam Jackson  <ajax@freedesktop.org>
+
+	* Makefile.am:
+	Don't override ${lispdir}, automake predefines it.
