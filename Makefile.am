@@ -132,9 +132,6 @@ endif
 
 # App default files  (*.ad)
 
-appdefaultdir = $(sysconfdir)/X11/app-defaults
-
-
 APPDEFAULTFILES = \
         Xedit-color \
 	Xedit
@@ -152,21 +149,19 @@ SUFFIXES = .ad
 .ad:
 	cp $< $@
 
+appdefaultdir = $(sysconfdir)/X11/app-defaults
 appdefault_DATA = $(APPDEFAULTFILES)
 
-EXTRA_DIST = lisp/compile.c Xedit-color.ad				\
-		Xedit-xprint.ad Xedit-noxprint.ad			\
-		./lisp/env.c						\
-	 	lisp/mathimp.c
+CLEANFILES = $(APPDEFAULTFILES) Xedit.ad
 
-xedit_lisp_DATA = ${srcdir}/lisp/modules/lisp.lsp \
+# Note that xedit_lispdir is defined above
+dist_xedit_lisp_DATA = ${srcdir}/lisp/modules/lisp.lsp \
 	${srcdir}/lisp/modules/xedit.lsp \
 	${srcdir}/lisp/modules/syntax.lsp \
 	${srcdir}/lisp/modules/indent.lsp
 
 progmodesdir = $(xedit_lispdir)/progmodes
-
-progmodes_DATA = ${srcdir}/lisp/modules/progmodes/c.lsp \
+dist_progmodes_DATA = ${srcdir}/lisp/modules/progmodes/c.lsp \
 	${srcdir}/lisp/modules/progmodes/html.lsp \
 	${srcdir}/lisp/modules/progmodes/imake.lsp \
 	${srcdir}/lisp/modules/progmodes/lisp.lsp \
@@ -180,6 +175,30 @@ progmodes_DATA = ${srcdir}/lisp/modules/progmodes/c.lsp \
 	${srcdir}/lisp/modules/progmodes/xlog.lsp \
 	${srcdir}/lisp/modules/progmodes/xrdb.lsp
 
-CLEANFILES = $(APPDEFAULTFILES) Xedit.ad
+dist_man1_MANS = man/xedit.1
 
-
+EXTRA_DIST = \
+	Xedit-color.ad \
+	Xedit-xprint.ad \
+	Xedit-noxprint.ad \
+	Xedit-sample \
+	lisp/README \
+	lisp/TODO \
+	lisp/compile.c \
+	lisp/env.c \
+ 	lisp/mathimp.c \
+	lisp/modules/psql.c \
+	lisp/modules/x11.c \
+	lisp/modules/xaw.c \
+	lisp/modules/xt.c \
+	lisp/re/README \
+	lisp/re/tests.txt \
+	lisp/test/hello.lsp \
+	lisp/test/list.lsp \
+	lisp/test/math.lsp \
+	lisp/test/psql-1.lsp \
+	lisp/test/psql-2.lsp \
+	lisp/test/psql-3.lsp \
+	lisp/test/regex.lsp \
+	lisp/test/stream.lsp \
+	lisp/test/widgets.lsp
