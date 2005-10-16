@@ -175,7 +175,7 @@ dist_progmodes_DATA = ${srcdir}/lisp/modules/progmodes/c.lsp \
 	${srcdir}/lisp/modules/progmodes/xlog.lsp \
 	${srcdir}/lisp/modules/progmodes/xrdb.lsp
 
-appman_SOURCES = man/xedit.1
+appman_SOURCES = xedit.man
 
 EXTRA_DIST = \
 	Xedit-color.ad \
