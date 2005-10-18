@@ -149,7 +149,7 @@ SUFFIXES = .ad
 .ad:
 	cp $< $@
 
-appdefaultdir = $(sysconfdir)/X11/app-defaults
+appdefaultdir = $(libdir)/X11/app-defaults
 appdefault_DATA = $(APPDEFAULTFILES)
 
 CLEANFILES = $(APPDEFAULTFILES) Xedit.ad
