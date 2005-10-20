@@ -27,6 +27,7 @@
 /* $XFree86: xc/programs/xedit/util.c,v 1.26 2003/05/07 20:54:43 herrb Exp $ */
 
 #include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>		/* for realpath() */
 #include "xedit.h"
 
