@@ -114,7 +114,7 @@ static LispObj interactive_arguments[4];
 
 static LispObj *justify_modes[4];
 static LispObj *wrap_modes[3];
-static LispObj *scan_types[5];
+static LispObj *scan_types[6];
 static LispObj *scan_directions[2];
 static LispObj execute_stream;
 static LispString execute_string;
@@ -1483,10 +1483,10 @@ Xedit_Scan(LispBuiltin *builtin)
 		    STRFUN(builtin), STROBJ(odirection));
     direction = (XawTextScanDirection)i;
 
-    for (i = 0; i < 5; i++)
+    for (i = 0; i < 6; i++)
 	if (otype == scan_types[i])
 	    break;
-    if (i >= 5)
+    if (i >= 6)
 	LispDestroy("%s: direction must be "
 		    ":POSITIONS, :WHITE-SPACE, :EOL, "
 		    ":PARAGRAPH, :ALL, or :ALPHA-NUMERIC, not %s",
