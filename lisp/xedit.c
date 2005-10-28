@@ -29,12 +29,12 @@
 
 /* $XFree86: xc/programs/xedit/lisp/xedit.c,v 1.25 2003/04/27 18:17:35 tsi Exp $ */
 
-#include "lisp/../xedit.h"
+#include "../xedit.h"
 #include <X11/Xaw/TextSrcP.h>	/* Needs some private definitions */
 #include <X11/Xaw/TextSinkP.h>	/* Also needs private definitions... */
 #include <X11/Xmu/Xmu.h>
 #define XEDIT_LISP_PRIVATE
-#include "lisp/xedit.h"
+#include "xedit.h"
 #include <signal.h>
 
 /* Initialize to enter lisp */
