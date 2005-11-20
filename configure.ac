@@ -35,7 +35,7 @@ AC_PROG_RANLIB
 # Checks for pkg-config packages
 XAW_CHECK_XPRINT_SUPPORT(XEDIT)
 if test "x$xaw_use_xprint" = "xyes" ; then
-   PKG_CHECK_MODULES(XPRINT_UTIL, xprintutil)
+   PKG_CHECK_MODULES(XPRINT_UTIL, xprintutil xp)
 
    XEDIT_CFLAGS="$XEDIT_CFLAGS $XPRINT_UTIL_CFLAGS"
    XEDIT_LIBS="$XEDIT_LIBS $XPRINT_UTIL_LIBS"
