@@ -44,6 +44,10 @@ fi
 AC_SUBST(XEDIT_CFLAGS)
 AC_SUBST(XEDIT_LIBS)
 
+PKG_CHECK_MODULES(APPDEFS, xt)
+appdefaultdir=$(pkg-config --variable=appdefaultdir xt)
+AC_SUBST(appdefaultdir)
+
 XORG_MANPAGE_SECTIONS
 XORG_RELEASE_VERSION
 

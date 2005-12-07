@@ -149,7 +149,7 @@ SUFFIXES = .ad
 .ad:
 	cp $< $@
 
-appdefaultdir = $(libdir)/X11/app-defaults
+appdefaultdir = @appdefaultdir@
 appdefault_DATA = $(APPDEFAULTFILES)
 
 CLEANFILES = $(APPDEFAULTFILES) Xedit.ad
@@ -186,7 +186,7 @@ EXTRA_DIST = \
 	lisp/TODO \
 	lisp/compile.c \
 	lisp/env.c \
- 	lisp/mathimp.c \
+	lisp/mathimp.c \
 	lisp/modules/psql.c \
 	lisp/modules/x11.c \
 	lisp/modules/xaw.c \
