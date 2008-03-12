@@ -239,7 +239,9 @@ c l @Num_Lock<Btn3Down>:xedit-focus() popup-menu(optionsMenu)\n\
 c @Num_Lock<Btn3Down>:xedit-focus() popup-menu(optionsMenu)\n\
 c l<Btn3Down>:xedit-focus() popup-menu(optionsMenu)\n\
 c<Btn3Down>:	xedit-focus() popup-menu(optionsMenu)\n\
-<Btn1Down>:	xedit-focus() select-start()
+<Btn1Down>:	xedit-focus() select-start()\n\
+<Btn4Down>:	scroll-one-line-down()\n\
+<Btn5Down>:	scroll-one-line-up()
 
 *filename.?.pieceSize:			256
 *filename.translations: #override \
