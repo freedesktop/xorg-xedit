@@ -551,6 +551,8 @@ Lisp_Disassemble(LispBuiltin *builtin)
     name = bytecode = NULL;
 
     switch (OBJECT_TYPE(function)) {
+	case LispFunction_t:
+	    function = function->data.atom->object;
 	case LispAtom_t:
 	    name = function;
 	    atom = function->data.atom;

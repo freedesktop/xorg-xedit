@@ -1127,6 +1127,13 @@ LispReadObject(int unintern, read_info *info)
 	collon = 1;
 	string[length++] = ch;
 	symbol = string + 1;
+	ch = LispGet();
+	if (ch == '|') {
+	    quote = ch;
+	    unreadable = 1;
+	}
+	else if (ch != EOF)
+	    LispUnget(ch);
     }
     else if (ch) {
 	if (islower(ch))
@@ -1220,12 +1227,6 @@ LispReadObject(int unintern, read_info *info)
     else if (quote == '"')
 	object = LSTRING(string, length);
 
-    else if (quote == '|' || (unreadable && !collon)) {
-	/* Set unreadable field, this atom needs quoting to be read back */
-	object = ATOM(string);
-	object->data.atom->unreadable = 1;
-    }
-
     else if (collon) {
 	/* Package specified in object name */
 	symbol[-1] = '\0';
@@ -1234,6 +1235,12 @@ LispReadObject(int unintern, read_info *info)
 	object = LispParseAtom(package, symbol,
 			       collon == 2, unreadable,
 			       read__stream, read__line);
+    }
+
+    else if (quote == '|' || (unreadable && !collon)) {
+	/* Set unreadable field, this atom needs quoting to be read back */
+	object = ATOM(string);
+	object->data.atom->unreadable = 1;
     }
 
     /* Check some common symbols */
