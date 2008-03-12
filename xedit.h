@@ -138,6 +138,7 @@ void DoPrint(Widget, XtPointer, XtPointer);
 void CancelFindFile(Widget, XEvent*, String*, Cardinal*);
 void FindFile(Widget, XEvent*, String*, Cardinal*);
 void LoadFile(Widget, XEvent*, String*, Cardinal*);
+Bool LoadFileInTextwindow(char *name, char *resolved_name);
 #ifdef INCLUDE_XPRINT_SUPPORT
 void PrintFile(Widget, XEvent*, String*, Cardinal*);
 #endif /* INCLUDE_XPRINT_SUPPORT */

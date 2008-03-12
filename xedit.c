@@ -123,161 +123,156 @@ String fallback_resources[] = {
 int
 main(int argc, char *argv[])
 {
-  XtAppContext appcon;
-  unsigned num_loaded = 0;
+    Boolean		exists;
+    char		*filename;
+    FileAccess		file_access;
+    Widget		source;
+    XtAppContext	appcon;
+    unsigned int	i, num_loaded;
+
+    num_loaded = 0;
 
 #ifdef INCLUDE_XPRINT_SUPPORT
-  XtSetLanguageProc(NULL, NULL, NULL);
+    XtSetLanguageProc(NULL, NULL, NULL);
 #endif
-  topwindow = XtAppInitialize(&appcon, "Xedit", NULL, 0, &argc, argv,
+    topwindow = XtAppInitialize(&appcon, "Xedit", NULL, 0, &argc, argv,
 #ifdef INCLUDE_XPRINT_SUPPORT
-			      fallback_resources,
+				fallback_resources,
 #else
-			      NULL,
+				NULL,
 #endif
-			      NULL, 0);
+				NULL, 0);
 
-  XtAppAddActions(appcon, actions, XtNumber(actions));
-  XtOverrideTranslations
-      (topwindow, XtParseTranslationTable ("<Message>WM_PROTOCOLS: quit()"));
-  
-  XtGetApplicationResources(topwindow, (XtPointer) &app_resources, resources,
-			    XtNumber(resources), NULL, 0);
+    XtAppAddActions(appcon, actions, XtNumber(actions));
+    XtOverrideTranslations(topwindow,
+			   XtParseTranslationTable("<Message>WM_PROTOCOLS: quit()"));
 
-  CurDpy = XtDisplay(topwindow);
-  XawSimpleMenuAddGlobalActions(appcon);
-  XtRegisterGrabAction(PopupMenu, True, 
-		       ButtonPressMask | ButtonReleaseMask,
-		       GrabModeAsync, GrabModeAsync);
+    XtGetApplicationResources(topwindow, (XtPointer) &app_resources, resources,
+			      XtNumber(resources), NULL, 0);
 
-  makeButtonsAndBoxes(topwindow);
+    CurDpy = XtDisplay(topwindow);
+    XawSimpleMenuAddGlobalActions(appcon);
+    XtRegisterGrabAction(PopupMenu, True,
+			 ButtonPressMask | ButtonReleaseMask,
+			 GrabModeAsync, GrabModeAsync);
 
-  StartHints();
-  StartFormatPosition();
-  (void)StartHooks(appcon);
-  if (position_format_mask == 0) {
-      int i;
+    makeButtonsAndBoxes(topwindow);
 
-      for (i = 0; i < 3; i++)
-	  XtRemoveCallback(texts[i], XtNpositionCallback, PositionChanged, NULL);
-  }
-  XtRealizeWidget(topwindow);
+    StartHints();
+    StartFormatPosition();
+    (void)StartHooks(appcon);
+    if (position_format_mask == 0) {
+	for (i = 0; i < 3; i++)
+	    XtRemoveCallback(texts[i], XtNpositionCallback,
+			     PositionChanged, NULL);
+    }
+    XtRealizeWidget(topwindow);
 
 #ifndef __UNIXOS2__
-  XeditLispInitialize();
+    XeditLispInitialize();
 #endif
 
-  options_popup = XtCreatePopupShell("optionsMenu", simpleMenuWidgetClass,
-				     topwindow, NULL, 0);
-  XtRealizeWidget(options_popup);
-  XtAddCallback(XtCreateManagedWidget("ispell", smeBSBObjectClass,
-				      options_popup, NULL, 0),
-		XtNcallback, IspellCallback, NULL);
-  CreateEditPopup();
-  
-  wm_delete_window = XInternAtom(XtDisplay(topwindow), "WM_DELETE_WINDOW",
-				 False);
-  (void) XSetWMProtocols (XtDisplay(topwindow), XtWindow(topwindow),
+    options_popup = XtCreatePopupShell("optionsMenu", simpleMenuWidgetClass,
+				       topwindow, NULL, 0);
+    XtRealizeWidget(options_popup);
+    XtAddCallback(XtCreateManagedWidget("ispell", smeBSBObjectClass,
+					options_popup, NULL, 0),
+		  XtNcallback, IspellCallback, NULL);
+    CreateEditPopup();
+
+    wm_delete_window = XInternAtom(XtDisplay(topwindow), "WM_DELETE_WINDOW",
+				   False);
+    (void)XSetWMProtocols(XtDisplay(topwindow), XtWindow(topwindow),
 			  &wm_delete_window, 1);
 
-  /* This first call is just to save the default font and colors */
-  UpdateTextProperties(0);
+    /* This first call is just to save the default font and colors */
+    UpdateTextProperties(0);
 
-  if (argc > 1) {
-      Boolean exists;
-      xedit_flist_item *item;
-      FileAccess file_access;
-      char *filename;
-      Widget source;
-      Arg args[2];
-      unsigned i, num_args;
-      char buf[BUFSIZ];
+    if (argc > 1) {
+	xedit_flist_item	*item;
+	Arg			args[2];
+	unsigned int		num_args;
 
-      for (i = 1; i < argc; i++) {
-	  struct stat st;
+	for (i = 1; i < argc; i++) {
+	    struct stat st;
 
-	  num_args = 0;
-	  filename = ResolveName(argv[i]);
-	  if (filename == NULL || FindTextSource(NULL, filename) != NULL)
-	      continue;
-	  if (stat(filename, &st) == 0 && !S_ISREG(st.st_mode)) {
-	      if (S_ISDIR(st.st_mode)) {
-		  if (!num_loaded) {
-		      char path[BUFSIZ + 1];
+	    filename = ResolveName(argv[i]);
+	    if (filename == NULL || FindTextSource(NULL, filename) != NULL)
+		continue;
 
-		      strncpy(path, filename, sizeof(path) - 2);
-		      path[sizeof(path) - 2] = '\0';
-		      if (*path) {
-			  if (path[strlen(path) - 1] != '/')
-			      strcat(path, "/");
-		      }
-		      else
-			  strcpy(path, "./");
-		      XtSetArg(args[0], XtNlabel, "");
-		      XtSetValues(dirlabel, args, 1);
-		      SwitchDirWindow(True);
-		      DirWindowCB(dirwindow, path, NULL);
-		      ++num_loaded;
-		  }
-		  continue;
-	      }
-	  }
+	    num_args = 0;
+	    if (stat(filename, &st) == 0 && !S_ISREG(st.st_mode)) {
+		if (S_ISDIR(st.st_mode)) {
+		    if (!num_loaded) {
+			char path[BUFSIZ + 1];
 
-	  switch (file_access = CheckFilePermissions(filename, &exists)) {
-	  case NO_READ:
-	      if (exists)
-		  XmuSnprintf(buf, sizeof(buf), "File %s, %s %s", argv[i],
-			      "exists, and could not be opened for",
-			      "reading.\n");
-	      else
-		  XmuSnprintf(buf, sizeof(buf), "File %s %s %s %s", argv[i],
-			      "does not exist, and",
-			      "the directory could not be opened for",
-			      "writing.\n");
-	      break;
-	  case READ_OK:
-	      XtSetArg(args[num_args], XtNeditType, XawtextRead); num_args++;
-	      XmuSnprintf(buf, sizeof(buf), "File %s opened READ ONLY.\n",
-			  argv[i]);
-	      break;
-	  case WRITE_OK:
-	      XtSetArg(args[num_args], XtNeditType, XawtextEdit); num_args++;
-	      XmuSnprintf(buf, sizeof(buf), "File %s opened read - write.\n",
-			  argv[i]);
-	      break;
-	  }
-	  if (file_access != NO_READ) {
-	      int flags;
+			strncpy(path, filename, sizeof(path) - 2);
+			path[sizeof(path) - 2] = '\0';
+			if (*path) {
+			    if (path[strlen(path) - 1] != '/')
+				strcat(path, "/");
+			}
+			else
+			    strcpy(path, "./");
+			XtSetArg(args[0], XtNlabel, "");
+			XtSetValues(dirlabel, args, 1);
+			SwitchDirWindow(True);
+			DirWindowCB(dirwindow, path, NULL);
+			++num_loaded;
+		    }
+		    continue;
+		}
+	    }
 
-	      if (exists) {
-		  flags = EXISTS_BIT;
-		  XtSetArg(args[num_args], XtNstring, filename);num_args++;
-	      }
-	      else {
-		  flags = 0;
-		  XtSetArg(args[num_args], XtNstring, NULL);	num_args++;
-	      }
-	      source = XtVaCreateWidget("textSource", international ?
-					multiSrcObjectClass :
-					asciiSrcObjectClass, topwindow,
-					XtNtype, XawAsciiFile,
-					XtNeditType, XawtextEdit,
-					NULL, NULL);
-	      XtSetValues(source, args, num_args);
-	      item = AddTextSource(source, argv[i], filename,
-				   flags, file_access);
-	      XtAddCallback(item->source, XtNcallback, SourceChanged,
-			    (XtPointer)item);
-	      if (exists && file_access == WRITE_OK)
-		  item->mode = st.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO);
-	      if (!num_loaded)
-		  SwitchTextSource(item);
-	      ++num_loaded;
-	      ResetSourceChanged(item);
-	  }
-	  XeditPrintf(buf);
-      }
-  }
+	    switch (file_access = CheckFilePermissions(filename, &exists)) {
+	    case NO_READ:
+		if (exists)
+		    XeditPrintf("File %s exists, and could not be opened for "
+				"reading.\n", argv[i]);
+		else
+		    XeditPrintf("File %s does not exist, and the directory "
+				"could not be opened for writing.\n", argv[i]);
+		break;
+	    case READ_OK:
+		XtSetArg(args[num_args], XtNeditType, XawtextRead); num_args++;
+		XeditPrintf("File %s opened READ ONLY.\n", argv[i]);
+		break;
+	    case WRITE_OK:
+		XtSetArg(args[num_args], XtNeditType, XawtextEdit); num_args++;
+		XeditPrintf("File %s opened read - write.\n", argv[i]);
+		break;
+	    }
+	    if (file_access != NO_READ) {
+		int flags;
+
+		if (exists) {
+		    flags = EXISTS_BIT;
+		    XtSetArg(args[num_args], XtNstring, filename);num_args++;
+		}
+		else {
+		    flags = 0;
+		    XtSetArg(args[num_args], XtNstring, NULL);	  num_args++;
+		}
+		source = XtVaCreateWidget("textSource", international ?
+					  multiSrcObjectClass
+					  : asciiSrcObjectClass, topwindow,
+					  XtNtype, XawAsciiFile,
+					  XtNeditType, XawtextEdit,
+					  NULL, NULL);
+		XtSetValues(source, args, num_args);
+		item = AddTextSource(source, argv[i], filename,
+				     flags, file_access);
+		XtAddCallback(item->source, XtNcallback, SourceChanged,
+			      (XtPointer)item);
+		if (exists && file_access == WRITE_OK)
+		    item->mode = st.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO);
+		if (!num_loaded)
+		    SwitchTextSource(item);
+		++num_loaded;
+		ResetSourceChanged(item);
+	    }
+	}
+    }
 
     if (!flist.pixmap && strlen(app_resources.changed_pixmap_name)) {
 	XrmValue from, to;
@@ -290,15 +285,15 @@ main(int argc, char *argv[])
 	XtConvertAndStore(flist.popup, XtRString, &from, XtRBitmap, &to);
     }
 
-  if (num_loaded == 0) {
-      XtSetKeyboardFocus(topwindow, filenamewindow);
-      XtVaSetValues(textwindow, XtNwrap, XawtextWrapLine, NULL);
-  }
-  else
-      XtSetKeyboardFocus(topwindow, textwindow);
+    if (num_loaded == 0) {
+	XtSetKeyboardFocus(topwindow, filenamewindow);
+	XtVaSetValues(textwindow, XtNwrap, XawtextWrapLine, NULL);
+    }
+    else
+	XtSetKeyboardFocus(topwindow, textwindow);
 
-  XtAppMainLoop(appcon);
-  return EXIT_SUCCESS;
+    XtAppMainLoop(appcon);
+    return EXIT_SUCCESS;
 }
 
 static void

@@ -1098,7 +1098,7 @@ print:
     reerror(ecode, &einfo.regex,
 	     buffer + length, sizeof(buffer) - length - 2);
     strcat(buffer, "\n");
-    XeditPrintf(buffer);
+    XeditPrintf("%s", buffer);
     refree(&einfo.regex);
     einfo.state = SubstituteDisabled;
     Feep();
@@ -1159,8 +1159,7 @@ fail:
 		ptr = "Unknown error";
 		break;
 	}
-	XmuSnprintf(buffer, sizeof(buffer), "Error: %s.\n", ptr);
-	XeditPrintf(buffer);
+	XeditPrintf("Error: %s.\n", ptr);
     }
     if (redisplay)
 	XawTextEnableRedisplay(w);
