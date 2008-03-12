@@ -37,6 +37,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <ctype.h>
+#include <locale.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -148,7 +149,6 @@ struct _IgnoreEntry {
     int		add;
 };
 
-
 /*
  * Prototypes
  */
@@ -173,6 +173,7 @@ static void IspellSetSensitive(Bool);
 static void IspellSetStatus(char*);
 static void IspellSetTerseMode(Bool);
 static Bool IspellStartProcess(void);
+static Bool IspellCheckProcess(void);
 static Bool IspellEndProcess(Bool, Bool);
 static void LookIspell(Widget, XtPointer, XtPointer);
 static void PopdownIspell(Widget, XtPointer, XtPointer);
@@ -930,7 +931,10 @@ IspellSend(void)
 	    return (-1);
 	}
 	for (i = 0; i < block.length; i++) {
-  	    wctomb(mb, ((wchar_t*)block.ptr)[i]);
+	    if (international)
+		wctomb(mb, ((wchar_t*)block.ptr)[i]);
+	    else
+		mb[0] = block.ptr[i];
 	    if (amplen) {
 		if (amplen + 2 >= sizeof(ampbuf)) {
 		    if (!ispell.terse_mode)
@@ -1028,7 +1032,10 @@ IspellSend(void)
 	    return (-1);
 	}
 	for (i = 0; i < block.length; i++) {
-	    wctomb(mb, ((wchar_t*)block.ptr)[i]);
+	    if (international)
+		wctomb(mb, ((wchar_t*)block.ptr)[i]);
+	    else
+		mb[0] = block.ptr[i];
 	    if (amplen) {
 		if (amplen + 2 >= sizeof(ampbuf)) {
 		    if (!ispell.terse_mode)
@@ -1314,14 +1321,26 @@ IspellStartProcess(void)
 {
     if (!ispell.pid) {
 	int len;
-	char *command;
+	char format[32];
+	static char *command;
 
 	ispell.source = XawTextGetSource(ispell.ascii);
 
-	len = strlen(ispell.cmd) + strlen(ispell.dictionary) +
-	      strlen(ispell.wchars) + 16;
+	if (command)
+	    XtFree(command);
+
+	strcpy(format, "%s -a");
+	len = strlen(ispell.cmd) + 4;
+	if (ispell.dictionary && *ispell.dictionary) {
+	    len += strlen(ispell.dictionary) + 6;
+	    strcat(format, " -d '%s'");
+	    if (ispell.wchars && *ispell.wchars) {
+		len += strlen(ispell.wchars + 6);
+		strcat(format, " -w '%s'");
+	    }
+	}
 	command = XtMalloc(len);
-	XmuSnprintf(command, len, "%s -a -d '%s' -w '%s'",
+	XmuSnprintf(command, len, format,
 		    ispell.cmd, ispell.dictionary, ispell.wchars);
 
 	pipe(ispell.ifd);
@@ -1335,7 +1354,9 @@ IspellStartProcess(void)
 	    close(ispell.ofd[1]);
 	    close(ispell.ifd[0]);
 	    close(ispell.ifd[1]);
-	    execl("/bin/sh", "sh", "-c", command, (void *)NULL);
+	    if (!international)
+		setlocale(LC_ALL, "ISO-8859-1");
+	    execl("/bin/sh", "sh", "-c", command, NULL);
 	    exit(-127);
 	}
 	else if (ispell.pid < 0) {
@@ -1362,6 +1383,23 @@ PopdownIspell(Widget w, XtPointer client_data, XtPointer call_data)
     (void)IspellEndProcess((Bool)(long)client_data, True);
     XtPopdown(ispell.shell);
     *ispell.sentbuf = '\0';
+}
+
+static Bool
+IspellCheckProcess(void)
+{
+    int status;
+
+    if (ispell.pid) {
+	waitpid(ispell.pid, &status, WNOHANG);
+	if (WIFEXITED(status)) {
+	    ispell.pid = 0;
+	}
+	else
+	    return (True);
+    }
+
+    return (False);
 }
 
 static Bool
@@ -1525,12 +1563,18 @@ ReplaceIspell(Widget w, XtPointer client_data, XtPointer call_data)
 		char mb[sizeof(wchar_t)];
 
 		if (XawTextSourceRead(ispell.source, pos - 1, &check, 1) > 0) {
-		    wctomb(mb, *(wchar_t*)check.ptr);
+		    if (international)
+			wctomb(mb, *(wchar_t*)check.ptr);
+		    else
+			mb[0] = check.ptr[0];
 		    do_replace = !isalpha(*mb) && *mb && !strchr(ispell.wchars, *mb);
 		}
 		if (do_replace &&
 		    XawTextSourceRead(ispell.source, pos + search.length, &check, 1) > 0) {
-		    wctomb(mb, *(wchar_t*)check.ptr);
+		    if (international)
+			wctomb(mb, *(wchar_t*)check.ptr);
+		    else
+			mb[0] = check.ptr[0];
 		    do_replace = !isalpha(*mb) && *mb && !strchr(ispell.wchars, *mb);
 		}
 		if (do_replace) {
@@ -1922,8 +1966,10 @@ ChangeDictionaryIspell(Widget w, XtPointer client_data, XtPointer call_data)
 	return;
 
     if (!ispell.lock) {
-	Feep();
-	return;
+	if (IspellCheckProcess()) {
+	    Feep();
+	    return;
+	}
     }
 
     for (tmp = ispell.dict_info; tmp; tmp = tmp->next)
@@ -1989,6 +2035,7 @@ InitIspell(void)
     Atom delete_window;
     char *str, *list;
     XtResource dict_res;
+    ispell_dict *dict, *prev_dict;
     int i;
     static XtResource text_res[] = {
 	{"skipLines", "Skip", XtRString, sizeof(char*),
@@ -2137,36 +2184,43 @@ InitIspell(void)
     dict_res.default_addr = "";
 
     list = XtNewString(ispell.dict_list);
+
+    /* Create first empty entry */
+    dict = XtNew(ispell_dict);
+    dict->sme = XtCreateManagedWidget("", smeBSBObjectClass,
+				      ispell.dictMenu, NULL, 0);
+    dict->wchars = "";
+    XtAddCallback(dict->sme, XtNcallback, ChangeDictionaryIspell,
+		  (XtPointer)dict);
+    ispell.dict_info = prev_dict = dict;
+
     for (str = strtok(list, " \t,"); str; str = strtok(NULL, " \t,")) {
-	ispell_dict *dic = XtNew(ispell_dict);
-
-	dic->sme = XtCreateManagedWidget(str, smeBSBObjectClass,
-					 ispell.dictMenu, NULL, 0);
-	XtGetApplicationResources(dic->sme, (XtPointer)dic, &dict_res,
+	dict = XtNew(ispell_dict);
+	dict->sme = XtCreateManagedWidget(str, smeBSBObjectClass,
+					  ispell.dictMenu, NULL, 0);
+	XtGetApplicationResources(dict->sme, (XtPointer)dict, &dict_res,
 				  1, NULL, 0);
-	XtAddCallback(dic->sme, XtNcallback, ChangeDictionaryIspell,
-		      (XtPointer)dic);
-	dic->next = NULL;
-	if (!ispell.dict_info)
-	    ispell.dict_info = dic;
-	else {
-	    ispell_dict *tmp = ispell.dict_info;
+	XtAddCallback(dict->sme, XtNcallback, ChangeDictionaryIspell,
+		      (XtPointer)dict);
+	prev_dict->next = dict;
+	prev_dict = dict;
+	dict->next = NULL;
+    }
+    XtFree(list);
 
-	    for (; tmp->next; tmp = tmp->next)
-		;
-	    tmp->next = dic;
-	}
-	if (strcmp(str, ispell.dictionary) == 0) {
+    for (dict = ispell.dict_info; dict; dict = dict->next) {
+	if (strcmp(XtName(dict->sme), ispell.dictionary) == 0) {
 	    Arg args[1];
 
 	    XtSetArg(args[0], XtNleftBitmap, flist.pixmap);
-	    XtSetValues(dic->sme, args, 1);
-	    XtSetArg(args[0], XtNlabel, str);
+	    XtSetValues(dict->sme, args, 1);
+	    XtSetArg(args[0], XtNlabel, XtName(dict->sme));
 	    XtSetValues(ispell.dict, args, 1);
-	    ispell.wchars = dic->wchars;
+	    ispell.wchars = dict->wchars;
+	    break;
 	}
     }
-    XtFree(list);
+
 
     delete_window = XInternAtom(XtDisplay(ispell.shell), "WM_DELETE_WINDOW", False);
     XSetWMProtocols(XtDisplay(ispell.shell), XtWindow(ispell.shell), &delete_window, 1);
