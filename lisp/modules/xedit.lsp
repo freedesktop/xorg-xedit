@@ -54,17 +54,19 @@
 ;; syntax-p, the entry is removed.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar *auto-modes* '(
-    ("\\.(c|cc|C|cxx|h|bm|xbm|xpm|l|y)$"
+    ("\\.(c|cc|C|cxx|cpp|h|hpp|bm|xbm|xpm|l|y|h\\.in)$"
 	"C/C++"		"c"	. *c-mode*)
     ("\\.(li?sp|scm)$"
 	"Lisp/Scheme"	"lisp"	. *lisp-mode*)
-    ("Imakefile|(\\.(cf|rules|tmpl|def|cpp)$)"
-	"X imake"	"imake"	. *imake-mode*)
-    ("[Mm]akefile.*|\\.mk$"
-	"Makefile"	"make"	. *make-mode*)
     ("\\.sh$"
 	"Unix shell"	"sh"	. *sh-mode*)
-    ("\\.sgml?$"
+    ("\\.(diff|patch)"
+	"Patch file"	"patch"	. *patch-mode*)
+    ("[Mm]akefile.*|\\.mk$"
+	"Makefile"	"make"	. *make-mode*)
+    ("\\.spec$"
+	"RPM spec"	"rpm"	. *rpm-mode*)
+    ("\\.(sgml?|dtd)$"
 	"SGML"		"sgml"	. *sgml-mode*)
     ("\\.html?$"
 	"HTML"		"html"	. *html-mode*)
@@ -72,14 +74,12 @@
 	"Man page"	"man"	. *man-mode*)
     ("app-defaults/\\w+|\\u[A-Za-z0-9_-]+\\.ad"
 	"X resource"	"xrdb"	. *xrdb-mode*)
-    ("\\<XF86Config[^/]*"
+    ("\\<(XF86Config[^/]*|xorg.conf$)"
 	"XF86Config"	"xconf"	. *xconf-mode*)
-    ("\\.spec$"
-	"RPM spec"	"rpm"	. *rpm-mode*)
-    ("\\<XFree86\\.\\d+\\.log$"
+    ("\\<(XFree86|Xorg)\\.\\d+\\.log$"
 	"XFree86 log"	"xlog"	. *xlog-mode*)
-    ("\\.(diff|patch)"
-	"Patch file"	"patch"	. *patch-mode*)
+    ("Imakefile|(\\.(cf|rules|tmpl|def)$)"
+	"X imake"	"imake"	. *imake-mode*)
 ))
 
 
