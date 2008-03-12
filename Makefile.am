@@ -102,7 +102,7 @@ libre_a_SOURCES = \
 #
 #     xedit
 #   
-
+xedit_DEPENDENCIES = liblisp.a libmp.a libre.a
 xedit_CFLAGS = $(PKGDEPS_CFLAGS) -I$(top_srcdir)/lisp/re -D_BSD_SOURCE -DXEDIT
 xedit_LDADD = -L. -lre -llisp -lmp $(PKGDEPS_LIBS) -lm
 
@@ -138,6 +138,7 @@ xedit_SOURCES += \
 endif
 
 # lisp/lsp
+lisp_lsp_DEPENDENCIES = liblisp.a libre.a libmp.a
 lisp_lsp_CFLAGS = -I$(top_srcdir)/lisp/re -I$(top_srcdir)/lisp/mp -DLISP -DLISPDIR=\"@LISPDIR@\" -D_BSD_SOURCE
 lisp_lsp_LDADD = -L. -llisp -lre -lmp -lm
 lisp_lsp_SOURCES = \
@@ -153,6 +154,7 @@ lisp_lsp_SOURCES += strcasecmp.c
 endif
 
 # re/tests
+lisp_re_tests_DEPENDENCIES = libre.a
 lisp_re_tests_CFLAGS = -I$(top_srcdir)/lisp/re -D_BSD_SOURCE
 lisp_re_tests_LDADD = -L. -lre
 lisp_re_tests_SOURCES = lisp/re/tests.c
