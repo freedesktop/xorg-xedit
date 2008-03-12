@@ -128,9 +128,9 @@ main(int argc, char *argv[])
     FileAccess		file_access;
     Widget		source;
     XtAppContext	appcon;
-    unsigned int	i, num_loaded;
+    unsigned int	i, num_loaded, lineno;
 
-    num_loaded = 0;
+    num_loaded = lineno = 0;
 
 #ifdef INCLUDE_XPRINT_SUPPORT
     XtSetLanguageProc(NULL, NULL, NULL);
@@ -195,6 +195,16 @@ main(int argc, char *argv[])
 
 	for (i = 1; i < argc; i++) {
 	    struct stat st;
+
+	    if (argv[i][0] == '+') {
+		char	*endptr;
+
+		lineno = strtol(argv[i], &endptr, 10);
+		/* Don't warn or anything about incorrect input? */
+		if (*endptr)
+		    lineno = 0;
+		continue;
+	    }
 
 	    filename = ResolveName(argv[i]);
 	    if (filename == NULL || FindTextSource(NULL, filename) != NULL)
@@ -289,8 +299,18 @@ main(int argc, char *argv[])
 	XtSetKeyboardFocus(topwindow, filenamewindow);
 	XtVaSetValues(textwindow, XtNwrap, XawtextWrapLine, NULL);
     }
-    else
+    else {
 	XtSetKeyboardFocus(topwindow, textwindow);
+	if (lineno) {
+	    XawTextPosition position;
+
+	    source = XawTextGetSource(textwindow);
+	    position = RSCAN(XawTextGetInsertionPoint(textwindow),
+			     lineno, False);
+	    position = LSCAN(position, 1, False);
+	    XawTextSetInsertionPoint(textwindow, position);
+	}
+    }
 
     XtAppMainLoop(appcon);
     return EXIT_SUCCESS;
