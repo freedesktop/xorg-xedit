@@ -73,6 +73,7 @@ static XawTextPositionInfo infos[3];
 Widget topwindow, textwindow, messwidget, labelwindow, filenamewindow;
 Widget scratch, hpane, vpanes[2], labels[3], texts[3], forms[3], positions[3];
 Widget options_popup, dirlabel, dirwindow;
+Boolean international;
 Boolean line_edit;
 XawTextWrapMode wrapmodes[3];
 
@@ -112,10 +113,12 @@ static XtResource resources[] = {
 
 #undef Offset
 
+#ifdef INCLUDE_XPRINT_SUPPORT
 String fallback_resources[] = {
     "*international:     True", /* set this globally for ALL widgets to avoid wiered crashes */
     NULL
 };
+#endif
 
 int
 main(int argc, char *argv[])
@@ -123,8 +126,16 @@ main(int argc, char *argv[])
   XtAppContext appcon;
   unsigned num_loaded = 0;
 
+#ifdef INCLUDE_XPRINT_SUPPORT
   XtSetLanguageProc(NULL, NULL, NULL);
-  topwindow = XtAppInitialize(&appcon, "Xedit", NULL, 0, &argc, argv, fallback_resources, NULL, 0);
+#endif
+  topwindow = XtAppInitialize(&appcon, "Xedit", NULL, 0, &argc, argv,
+#ifdef INCLUDE_XPRINT_SUPPORT
+			      fallback_resources,
+#else
+			      NULL,
+#endif
+			      NULL, 0);
 
   XtAppAddActions(appcon, actions, XtNumber(actions));
   XtOverrideTranslations
@@ -246,8 +257,9 @@ main(int argc, char *argv[])
 		  flags = 0;
 		  XtSetArg(args[num_args], XtNstring, NULL);	num_args++;
 	      }
-	      source = XtVaCreateWidget("textSource",
-					multiSrcObjectClass, topwindow,
+	      source = XtVaCreateWidget("textSource", international ?
+					multiSrcObjectClass :
+					asciiSrcObjectClass, topwindow,
 					XtNtype, XawAsciiFile,
 					XtNeditType, XawtextEdit,
 					NULL, NULL);
@@ -354,11 +366,22 @@ makeButtonsAndBoxes(Widget parent)
     XtSetArg(arglist[num_args], XtNeditType, XawtextEdit);		++num_args;
     textwindow =  XtCreateManagedWidget(editWindow, asciiTextWidgetClass,
 					vpanes[0], arglist, num_args);
+
+#ifdef INCLUDE_XPRINT_SUPPORT
+    international = True;
+#else
+    /* Get international resource value form the textwindow */
+    num_args = 0;
+    XtSetArg(arglist[num_args], XtNinternational, &international);	++num_args;
+    XtGetValues(textwindow, arglist, num_args);
+#endif
+
     num_args = 0;
     XtSetArg(arglist[num_args], XtNtype, XawAsciiFile);			++num_args;
     XtSetArg(arglist[num_args], XtNeditType, XawtextEdit);		++num_args;
-    scratch = XtVaCreateWidget("textSource",
-			       multiSrcObjectClass, topwindow,
+    scratch = XtVaCreateWidget("textSource", international ?
+			       multiSrcObjectClass :
+			       asciiSrcObjectClass, topwindow,
 			       XtNtype, XawAsciiFile,
 			       XtNeditType, XawtextEdit,
 			       NULL, NULL);

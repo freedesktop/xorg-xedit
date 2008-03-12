@@ -261,7 +261,8 @@ c<Key>G:	cancel-find-file()\n\
 !*ispell.dictionary:			br
 !*ispell.dictionaries:			br american americanmed+ english
 !*ispell*br.wordChars:			áéíóúçÁÉÍÓÚÇàÀâêôÂÊÔüÜãõÃÕ-
-!*ispell.ispellCommand:			/usr/local/bin/ispell -B -m
+*ispell.ispellCommand:			/usr/bin/aspell -B -m
+*ispell.lookCommand:			/bin/egrep
 !*ispell*text.skipLines:		.#
 
 *ispell.geometry:			0x0

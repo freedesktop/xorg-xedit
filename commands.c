@@ -357,8 +357,9 @@ DoSave(Widget w, XtPointer client_data, XtPointer call_data)
 	      XtRemoveCallback(scratch, XtNcallback, SourceChanged,
 			       (XtPointer)item);
 	      item->source = scratch =
-		  XtVaCreateWidget("textSource",
-				   multiSrcObjectClass,
+		  XtVaCreateWidget("textSource", international ?
+				   multiSrcObjectClass :
+				   asciiSrcObjectClass,
 				   topwindow,
 				   XtNtype, XawAsciiFile,
 				   XtNeditType, XawtextEdit,
@@ -495,8 +496,9 @@ ReallyDoLoad(char *name, char *filename)
 	    XtSetArg(args[num_args], XtNstring, NULL); num_args++;
 	}
 
-	source = XtVaCreateWidget("textSource",
-				  multiSrcObjectClass,
+	source = XtVaCreateWidget("textSource", international ?
+				  multiSrcObjectClass :
+				  asciiSrcObjectClass,
 				  topwindow,
 				  XtNtype, XawAsciiFile,
 				  XtNeditType, XawtextEdit,
