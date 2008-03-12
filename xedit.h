@@ -49,6 +49,11 @@
 
 #include <X11/Xmu/SysUtil.h>
 
+#define LSCAN(from, count, include)	\
+	XawTextSourceScan(source, from, XawstEOL, XawsdLeft, count, include)
+#define RSCAN(from, count, include)	\
+	XawTextSourceScan(source, from, XawstEOL, XawsdRight, count, include)
+
 typedef struct _xedit_hints {
     char *resource;
     unsigned long interval;
