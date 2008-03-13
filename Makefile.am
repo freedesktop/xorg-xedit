@@ -113,6 +113,7 @@ xedit_SOURCES =	\
         ispell.c \
         lisp.c \
         options.c \
+	tags.c \
         util.c \
         xedit.c \
 	xedit.h

@@ -246,6 +246,8 @@ AddTextSource(Widget source, char *name, char *filename, int flags,
     item->mode = 0;
     item->properties = NULL;
     item->xldata = NULL;
+    /* Try to load associated tags file */
+    SearchTagsFile(item);
 
     flist.itens = (xedit_flist_item**)
 	XtRealloc((char*)flist.itens, sizeof(xedit_flist_item*)

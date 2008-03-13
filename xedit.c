@@ -60,7 +60,8 @@ static XtActionsRec actions[] = {
 {"xedit-keyboard-reset",XeditKeyboardReset},
 #endif
 {"ispell", IspellAction},
-{"line-edit", LineEditAction}
+{"line-edit", LineEditAction},
+{"tags", TagsAction}
 };
 
 #define DEF_HINT_INTERVAL	300	/* in seconds, 5 minutes */
@@ -109,6 +110,10 @@ static XtResource resources[] = {
 	 Offset(position_format), XtRString, "L%l"},
    {"autoReplace", "Replace", XtRString, sizeof(char*),
 	 Offset(auto_replace), XtRImmediate, NULL},
+   {"tagsName", "TagsName", XtRString, sizeof(char *),
+         Offset(tagsName), XtRString, "tags"},
+   {"loadTags", "LoadTags", XtRBoolean, sizeof(Boolean),
+	 Offset(loadTags), XtRImmediate, (XtPointer)TRUE},
 };
 
 #undef Offset

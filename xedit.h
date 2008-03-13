@@ -66,6 +66,7 @@ typedef struct _xedit_hints {
 typedef enum {NO_READ, READ_OK, WRITE_OK} FileAccess;
 
 typedef struct _XeditLispData XeditLispData;
+typedef struct _XeditTagsInfo XeditTagsInfo;
 
 #define CHANGED_BIT	0x01
 #define EXISTS_BIT	0x02
@@ -81,6 +82,7 @@ typedef struct _xedit_flist_item {
     XawTextPropertyList *properties;
     XawTextWrapMode wrap;
     XeditLispData *xldata;
+    XeditTagsInfo *tags;
 } xedit_flist_item;
 
 extern struct _xedit_flist {
@@ -101,6 +103,8 @@ extern struct _app_resources {
     char *changed_pixmap_name;
     char *position_format;
     char *auto_replace;
+    char *tagsName;
+    Boolean loadTags;
 } app_resources;
 
 extern Widget topwindow, textwindow, labelwindow, filenamewindow, messwidget;
@@ -176,6 +180,10 @@ void SetTextProperties(xedit_flist_item*);
 void UnsetTextProperties(xedit_flist_item*);
 void CreateEditModePopup(Widget);
 void SetEditModeMenu(void);
+
+/* tags.c */
+void TagsAction(Widget, XEvent*, String*, Cardinal*);
+void SearchTagsFile(xedit_flist_item *item);
 
 /*	externs for system replacement functions */
 #ifdef NEED_STRCASECMP

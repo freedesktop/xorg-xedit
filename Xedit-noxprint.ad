@@ -39,7 +39,9 @@ Use Control-X,k to close file being edited.\n\
 Use Control-X,o to switch to another splitted window.\n\
 Use Control-X,u to undo. Control-G to switch between Undo and Redo.\n\
 Use Insert to toggle Overwrite mode.\n\
-Use Control-G to interrupt the lisp subprocess
+Use Control-G to interrupt the lisp subprocess.\n\
+Use Escape to enter or leave regex search and replace mode.\n\
+Use Alt-. to search tags for the selected symbol or find the next match.
 
 *formWindow*defaultDistance:		2
 *formWindow.?.borderWidth:		0
@@ -201,6 +203,7 @@ m<Key>I:	no-op(r)
 <Ctrl>X,!<Key>u:undo()\n\
 <Ctrl>G:	xedit-keyboard-reset()\n\
 <Ctrl>J:	xedit-print-lisp-eval()\n\
+:m<Key>.:	tags()\n\
 <Key>Tab:	insert-char()\n\
 !l @Num_Lock<Key>b:insert-char()\n\
 !l <Key>b:	insert-char()\n\
