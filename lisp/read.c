@@ -1322,7 +1322,7 @@ LispParseAtom(char *package, char *symbol, int intern, int unreadable,
 
 	/* Get the object pointer */
 	if (pack == lisp__data.key)
-	    object = KEYWORD(LispDoGetAtom(symbol, 0)->string);
+	    object = KEYWORD(LispDoGetAtom(symbol, 0)->key->value);
 	else
 	    object = ATOM(symbol);
 	if (unreadable)
@@ -1336,19 +1336,11 @@ LispParseAtom(char *package, char *symbol, int intern, int unreadable,
     else {
 	/* Symbol must exist (and be extern) in the specified package */
 
-	int i;
 	LispAtom *atom;
 
-	i = STRHASH(symbol);
-	atom = pack->atoms[i];
-	while (atom) {
-	    if (strcmp(atom->string, symbol) == 0) {
-		object = atom->object;
-		break;
-	    }
-
-	    atom = atom->next;
-	}
+	atom = (LispAtom *)hash_check(pack->atoms, symbol, strlen(symbol));
+	if (atom)
+	    object = atom->object;
 
 	/* No object found */
 	if (object == NULL || object->data.atom->ext == 0)
@@ -1875,13 +1867,13 @@ LispReadStruct(read_info *info)
 
     GC_PROTECT(fields);
 
-    len = strlen(ATOMID(CAR(fields)));
+    len = ATOMID(CAR(fields))->length;
 	   /* MAKE- */
     if (len + 6 > sizeof(stk))
 	str = LispMalloc(len + 6);
     else
 	str = stk;
-    sprintf(str, "MAKE-%s", ATOMID(CAR(fields)));
+    sprintf(str, "MAKE-%s", ATOMID(CAR(fields))->value);
     RPLACA(fields, ATOM(str));
     if (str != stk)
 	LispFree(str);

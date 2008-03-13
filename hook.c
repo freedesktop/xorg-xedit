@@ -39,6 +39,7 @@
 
 #include "xedit.h"
 #include "re.h"
+#include "util.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -46,11 +47,11 @@
 /*
  * Types
  */
-typedef struct _ReplaceList {
-    char *word;
+typedef struct _ReplaceEntry {
+    hash_key *word;
+    struct _ReplaceEntry *next;
     char *replace;
-    struct _ReplaceList *next;
-} ReplaceList;
+} ReplaceEntry;
 
 typedef enum {
     SubstituteDisabled,
@@ -108,7 +109,7 @@ static void SubstituteCallback(Widget, XtPointer, XtPointer);
  * Initialization
  */
 #define STRTBLSZ	11
-static ReplaceList *replace_list[STRTBLSZ];
+static hash_table *replace_hash;
 static EditInfo einfo;
 extern Widget scratch;
 
@@ -191,6 +192,8 @@ StartAutoReplace(void)
     if (!replace || !*replace)
 	return (False);
 
+    replace_hash = hash_new(STRTBLSZ, NULL);
+
     left = XtMalloc(llen = 256);
     right = XtMalloc(rlen = 256);
     while (*replace) {
@@ -247,34 +250,26 @@ StartAutoReplace(void)
 static char *
 ReplacedWord(char *word, char *replace)
 {
-    ReplaceList *list;
-    int ii = 0;
-    char *pp = word;
+    int length;
+    ReplaceEntry *entry;
 
-    while (*pp)
-	ii = (ii << 1) ^ *pp++;
-    if (ii < 0)
-	ii = -ii;
-    ii %= STRTBLSZ;
-    for (list = replace_list[ii]; list; list = list->next)
-	if (strcmp(list->word, word) == 0) {
-	    if (replace) {
-		XtFree(list->replace);
-		list->replace = XtNewString(replace);
-	    }
-	    return (list->replace);
-	}
+    length = strlen(word);
+    entry = (ReplaceEntry *)hash_check(replace_hash, word, length);
+    if (entry == NULL && replace != NULL) {
+	entry = XtNew(ReplaceEntry);
+	entry->word = XtNew(hash_key);
+	entry->word->value = XtNewString(word);
+	entry->word->length = length;
+	entry->next = NULL;
+	entry->replace = XtNewString(replace);
+	hash_put(replace_hash, (hash_entry *)entry);
+    }
+    else if (replace) {
+	XtFree(entry->replace);
+	entry->replace = XtNewString(replace);
+    }
 
-    if (!replace)
-	return (NULL);
-
-    list = XtNew(ReplaceList);
-    list->word = XtNewString(word);
-    list->replace = XtNewString(replace);
-    list->next = replace_list[ii];
-    replace_list[ii] = list;
-
-    return (list->replace);
+    return (entry ? entry->replace : NULL);
 }
 
 static void

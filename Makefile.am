@@ -108,6 +108,7 @@ xedit_LDADD = -L. -lre -llisp -lmp $(PKGDEPS_LIBS) -lm
 
 xedit_SOURCES =	\
         commands.c \
+	hash.c \
         hook.c \
         ispell.c \
         lisp.c \
@@ -139,6 +140,7 @@ endif
 lisp_lsp_CFLAGS = -I$(top_srcdir)/lisp/re -I$(top_srcdir)/lisp/mp -DLISP -DLISPDIR=\"@LISPDIR@\" -D_BSD_SOURCE
 lisp_lsp_LDADD = -L. -llisp -lre -lmp -lm
 lisp_lsp_SOURCES = \
+	hash.c \
 	lisp/lsp.c
 
 if NEED_REALPATH

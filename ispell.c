@@ -31,6 +31,7 @@
 /* $XFree86: xc/programs/xedit/ispell.c,v 1.19 2002/10/19 20:04:20 herrb Exp $ */
 
 #include "xedit.h"
+#include "util.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -133,17 +134,20 @@ struct _ispell {
     struct _ispell_format *format_info;
 };
 
-typedef struct _ReplaceList {
-    char *word;
-    char *replace;
-    struct _ReplaceList *next;
-} ReplaceList;
+typedef struct _ReplaceEntry ReplaceEntry;
+struct _ReplaceEntry {
+    hash_key	*word;
+    ReplaceEntry*next;
+    char	*replace;
+};
 
-typedef struct _IgnoreList {
-    char *word;
-    int add;
-    struct _IgnoreList *next;
-} IgnoreList;
+typedef struct _IgnoreEntry IgnoreEntry;
+struct _IgnoreEntry {
+    hash_key	*word;
+    IgnoreEntry	*next;
+    int		add;
+};
+
 
 /*
  * Prototypes
@@ -194,8 +198,8 @@ static struct _ispell ispell;
 
 #define RSTRTBLSZ	23
 #define ISTRTBLSZ	71
-static ReplaceList *replace_list[RSTRTBLSZ];
-static IgnoreList *ignore_list[ISTRTBLSZ];
+static hash_table *replace_hash;
+static hash_table *ignore_hash;
 
 #ifndef XtCStatus
 #define XtCStatus	"Status"
@@ -441,71 +445,59 @@ IspellCheckUndo(void)
 static char *
 IspellReplacedWord(char *word, char *replace)
 {
-    ReplaceList *list;
-    int ii = 0;
-    char *pp = word;
+    int			word_len;
+    hash_key		*word_key;
+    ReplaceEntry	*entry;
 
-    while (*pp)
-	ii = (ii << 1) ^ *pp++;
-    if (ii < 0)
-	ii = -ii;
-    ii %= RSTRTBLSZ;
-    for (list = replace_list[ii]; list; list = list->next)
-	if (strcmp(list->word, word) == 0) {
-	    if (replace) {
-		XtFree(list->replace);
-		list->replace = XtNewString(replace);
-	    }
-	    return (list->replace);
-	}
+    word_len = strlen(word);
+    entry = (ReplaceEntry *)hash_check(replace_hash, word, word_len);
+    if (entry == NULL) {
+	word_key = XtNew(hash_key);
+	word_key->value = XtNewString(word);
+	word_key->length = word_len;
+	entry = XtNew(ReplaceEntry);
+	entry->word = word_key;
+	entry->replace = NULL;
+	entry->next = NULL;
+	hash_put(replace_hash, (hash_entry *)entry);
+    }
 
-    if (!replace)
-	return (NULL);
+    if (replace) {
+	XtFree(entry->replace);
+	entry->replace = XtNewString(replace);
+    }
 
-    list = XtNew(ReplaceList);
-    list->word = XtNewString(word);
-    list->replace = XtNewString(replace);
-    list->next = replace_list[ii];
-    replace_list[ii] = list;
-
-    return (list->replace);
+    return (entry->replace);
 }
 
 static Bool
 IspellDoIgnoredWord(char *word, int cmd, int add)
 {
-    IgnoreList *list, *prev;
-    int ii = 0;
-    char *pp = word;
+    int		word_len;
+    hash_key	*word_key;
+    IgnoreEntry	*entry;
 
-    while (*pp)
-	ii = (ii << 1) ^ *pp++;
-    if (ii < 0)
-	ii = -ii;
-    ii %= ISTRTBLSZ;
-    for (prev = list = ignore_list[ii]; list; prev = list, list = list->next)
-	if (strcmp(list->word, word) == 0) {
-	    if (cmd == REMOVE) {
-		XtFree(list->word);
-		prev->next = list->next;
-		XtFree((char*)list);
-		if (prev == list)
-		    ignore_list[ii] = NULL;
-		return (True);
-	    }
-	    return (cmd == CHECK);
-	}
+    word_len = strlen(word);
+    entry = (IgnoreEntry *)hash_check(ignore_hash, word, word_len);
+    if (entry == NULL) {
+	if (cmd != ADD)
+	    return (False);
 
-    if (cmd != ADD)
-	return (False);
+	word_key = XtNew(hash_key);
+	word_key->value = XtNewString(word);
+	word_key->length = word_len;
+	entry = XtNew(IgnoreEntry);
+	entry->word = word_key;
+	entry->add = add;
+	entry->next = NULL;
+	hash_put(ignore_hash, (hash_entry *)entry);
 
-    list = XtNew(IgnoreList);
-    list->word = XtNewString(word);
-    list->add = add;
-    list->next = ignore_list[ii];
-    ignore_list[ii] = list;
+	return (True);
+    }
+    else if (cmd == REMOVE)
+	hash_rem(ignore_hash, (hash_entry *)entry);
 
-    return (True);
+    return (cmd == CHECK);
 }
 
 static Bool
@@ -1378,39 +1370,26 @@ IspellEndProcess(Bool killit, Bool killundo)
     ispell.source = NULL;
 
     if (ispell.pid) {
-	IgnoreList *il, *pil, *nil;
-	int i;
+	IgnoreEntry	*ientry;
+	ReplaceEntry	*rentry;
 
 	/* insert added words in private dictionary */
-	for (i = 0; i < ISTRTBLSZ; i++) {
-	    pil = il = ignore_list[i];
-	    while (il) {
-		if (il->add) {
-		    nil = il->next;
-		    if (il == pil)
-			ignore_list[i] = nil;
-		    else
-			pil->next = nil;
-		    if (il->add == UNCAP)
-			write(ispell.ofd[1], "&", 1);
-		    else
-			write(ispell.ofd[1], "*", 1);
-		    write(ispell.ofd[1], il->word, strlen(il->word));
-		    write(ispell.ofd[1], "\n", 1);
-		    XtFree(il->word);
-		    XtFree((char*)il);
-		    il = nil;
-		}
+	for (ientry = (IgnoreEntry *)hash_iter_first(ignore_hash);
+	     ientry;
+	     ientry = (IgnoreEntry *)hash_iter_next(ignore_hash)) {
+	    if (ientry->add) {
+		if (ientry->add == UNCAP)
+		    write(ispell.ofd[1], "&", 1);
 		else
-		    il = il->next;
-		pil = il;
+		    write(ispell.ofd[1], "*", 1);
+		write(ispell.ofd[1], ientry->word->value, ientry->word->length);
+		write(ispell.ofd[1], "\n", 1);
 	    }
 	}
 	write(ispell.ofd[1], "#\n", 2);		/* save dictionary */
+	hash_clr(ignore_hash);
 
 	if (killit) {
-	    ReplaceList *rl, *prl;
-
 	    XtRemoveInput(ispell.id);
 
 	    close(ispell.ofd[0]);
@@ -1430,27 +1409,13 @@ IspellEndProcess(Bool killit, Bool killundo)
 		XtFree(ispell.buf);
 	    ispell.buf = NULL;
 
-	    for (i = 0; i < RSTRTBLSZ; i++) {
-		prl = rl = replace_list[i];
-		while (prl) {
-		    rl = rl->next;
-		    XtFree(prl->word);
-		    XtFree(prl->replace);
-		    XtFree((char*)prl);
-		    prl = rl;
-		}
-		replace_list[i] = NULL;
+	    /* forget about replace matches */
+	    for (rentry = (ReplaceEntry *)hash_iter_first(replace_hash);
+		 rentry;
+		 rentry = (ReplaceEntry *)hash_iter_next(replace_hash)) {
+		XtFree(rentry->replace);
 	    }
-	    for (i = 0; i < ISTRTBLSZ; i++) {
-		pil = il = ignore_list[i];
-		while (pil) {
-		    il = il->next;
-		    XtFree(pil->word);
-		    XtFree((char*)pil);
-		    pil = il;
-		}
-		ignore_list[i] = NULL;
-	    }
+	    hash_clr(replace_hash);
 	}
 
 	if (killundo)
@@ -2032,6 +1997,9 @@ InitIspell(void)
 
     if (ispell.shell)
 	return (False);
+
+    replace_hash = hash_new(RSTRTBLSZ, NULL);
+    ignore_hash = hash_new(ISTRTBLSZ, NULL);
 
     ispell.shell	= XtCreatePopupShell("ispell", transientShellWidgetClass,
 					     topwindow, NULL, 0);
