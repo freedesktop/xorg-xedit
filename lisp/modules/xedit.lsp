@@ -64,8 +64,12 @@
 	"Patch file"	"patch"	. *patch-mode*)
     ("[Mm]akefile.*|\\.mk$"
 	"Makefile"	"make"	. *make-mode*)
+    ("\\.(ac|in|m4)$"
+	"Autotools"	"auto"	. *auto-mode*)
     ("\\.spec$"
 	"RPM spec"	"rpm"	. *rpm-mode*)
+    ("\\.(pl|pm|ph)$"
+	"Perl"		"perl"	. *perl-mode*)
     ("\\.(sgml?|dtd)$"
 	"SGML"		"sgml"	. *sgml-mode*)
     ("\\.html?$"

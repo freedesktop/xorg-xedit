@@ -189,13 +189,16 @@ dist_lisp_DATA = ${srcdir}/lisp/modules/lisp.lsp \
 	${srcdir}/lisp/modules/indent.lsp
 
 progmodesdir = $(LISPDIR)/progmodes
-dist_progmodes_DATA = ${srcdir}/lisp/modules/progmodes/c.lsp \
+dist_progmodes_DATA = \
+	${srcdir}/lisp/modules/progmodes/auto.lsp \
+	${srcdir}/lisp/modules/progmodes/c.lsp \
 	${srcdir}/lisp/modules/progmodes/html.lsp \
 	${srcdir}/lisp/modules/progmodes/imake.lsp \
 	${srcdir}/lisp/modules/progmodes/lisp.lsp \
 	${srcdir}/lisp/modules/progmodes/make.lsp \
 	${srcdir}/lisp/modules/progmodes/man.lsp \
 	${srcdir}/lisp/modules/progmodes/patch.lsp \
+	${srcdir}/lisp/modules/progmodes/perl.lsp \
 	${srcdir}/lisp/modules/progmodes/rpm.lsp \
 	${srcdir}/lisp/modules/progmodes/sgml.lsp \
 	${srcdir}/lisp/modules/progmodes/sh.lsp \
