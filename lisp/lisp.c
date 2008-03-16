@@ -5454,7 +5454,7 @@ LispBegin(void)
 }
 
 void
-LispEnd()
+LispEnd(void)
 {
     /* XXX needs to free all used memory, not just close file descriptors */
 }

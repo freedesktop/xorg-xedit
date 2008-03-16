@@ -3242,7 +3242,7 @@ Lisp_Member(LispBuiltin *builtin)
 	}
 	else {
 	    for (; CONSP(list); list = CDR(list))
-		if (FCOMPARE(lambda, item, CAR(list), code) == expect)
+		if ((FCOMPARE(lambda, item, CAR(list), code)) == expect)
 		    return (list);
 	}
     }
@@ -3255,7 +3255,7 @@ Lisp_Member(LispBuiltin *builtin)
 	else {
 	    for (; CONSP(list); list = CDR(list)) {
 		compare = APPLY1(key, CAR(list));
-		if (FCOMPARE(lambda, item, compare, code) == expect)
+		if ((FCOMPARE(lambda, item, compare, code)) == expect)
 		    return (list);
 	    }
 	}
