@@ -70,6 +70,8 @@
 	"RPM spec"	"rpm"	. *rpm-mode*)
     ("\\.(pl|pm|ph)$"
 	"Perl"		"perl"	. *perl-mode*)
+    ("\\.(py)$"
+	"Python"	"python". *python-mode*)
     ("\\.(sgml?|dtd)$"
 	"SGML"		"sgml"	. *sgml-mode*)
     ("\\.html?$"

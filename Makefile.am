@@ -201,6 +201,7 @@ dist_progmodes_DATA = \
 	${srcdir}/lisp/modules/progmodes/man.lsp \
 	${srcdir}/lisp/modules/progmodes/patch.lsp \
 	${srcdir}/lisp/modules/progmodes/perl.lsp \
+	${srcdir}/lisp/modules/progmodes/python.lsp \
 	${srcdir}/lisp/modules/progmodes/rpm.lsp \
 	${srcdir}/lisp/modules/progmodes/sgml.lsp \
 	${srcdir}/lisp/modules/progmodes/sh.lsp \
