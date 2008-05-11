@@ -934,7 +934,9 @@ confirm_label:
 	    }
 	    memcpy(einfo.line, block.ptr, block.length);
 	    length = block.length;
-	    for (position += length; position < to; position += block.length) {
+	    for (position += length;
+		 position < to && block.length;
+		 position += block.length) {
 		XawTextSourceRead(source, position, &block, to - position);
 		memcpy(einfo.line + length, block.ptr, block.length);
 		length += block.length;
