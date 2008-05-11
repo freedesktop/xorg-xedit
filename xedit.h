@@ -29,6 +29,7 @@
 /* $XFree86: xc/programs/xedit/xedit.h,v 1.17 2002/10/06 17:11:39 paulo Exp $ */
 
 #include <stdio.h>
+#include <time.h>
 #include <X11/Intrinsic.h>
 #include <X11/StringDefs.h>
 #include <X11/cursorfont.h>
@@ -79,6 +80,7 @@ typedef struct _xedit_flist_item {
     FileAccess file_access;
     XawTextPosition display_position, insert_position;
     int mode;
+    time_t mtime;
     XawTextPropertyList *properties;
     XawTextWrapMode wrap;
     XeditLispData *xldata;

@@ -244,6 +244,7 @@ AddTextSource(Widget source, char *name, char *filename, int flags,
     item->file_access = file_access;
     item->display_position = item->insert_position = 0;
     item->mode = 0;
+    item->mtime = 0;
     item->properties = NULL;
     item->xldata = NULL;
     /* Try to load associated tags file */

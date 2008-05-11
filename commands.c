@@ -80,6 +80,7 @@ static Boolean double_click = FALSE;
 #define DC_CLOBBER	3
 #define DC_KILL		4
 #define DC_SAVE		5
+#define DC_NEWER	6
 static int dc_state;
 
 /*	Function Name: AddDoubleClickCallback(w)
@@ -236,39 +237,32 @@ DoSave(Widget w, XtPointer client_data, XtPointer call_data)
     xedit_flist_item *item;
     Boolean exists;
     Widget source = XawTextGetSource(textwindow);
+    char buffer[BUFSIZ];
+    struct stat st;
+    static char *nothing_saved = " -- nothing saved.\n";
 
     if (!filename) {
-	XeditPrintf("Save: Can't resolve pathname -- nothing saved.\n");
-	Feep();
-	return;
+	XmuSnprintf(buffer, sizeof(buffer), "%s%s",
+		    "Save: Can't resolve pathname",  nothing_saved);
+	goto error;
     }
     else if (*name == '\0') {
-	XeditPrintf("Save: No filename specified -- nothing saved.\n");
-	Feep();
-	return;
-    }
-    else {
-	struct stat st;
-
-	if (stat(filename, &st) == 0 && !S_ISREG(st.st_mode)) {
-	    XeditPrintf("Save: file %s is not a regular file "
-			"-- nothing saved.\n", name);
-	    Feep();
-	    return;
-	}
+	XmuSnprintf(buffer, sizeof(buffer), "%s%s",
+		    "Save: No filename specified", nothing_saved);
+	goto error;
     }
 
     item = FindTextSource(NULL, filename);
     if (item != NULL && item->source != source) {
 	if (!double_click || (dc_state && dc_state != DC_LOADED)) {
-	    XeditPrintf("Save: file %s is already loaded, "
-			"Save again to unload it -- nothing saved.\n",
-			name);
+	    XmuSnprintf(buffer, sizeof(buffer), "%s%s%s%s",
+			"Save: file ", name, " is already loaded, "
+			"Save again to unload it", nothing_saved);
 	    Feep();
 	    double_click = TRUE;
 	    dc_state = DC_LOADED;
 	    AddDoubleClickCallback(XawTextGetSource(textwindow), True);
-	    return;
+	    goto error;
 	}
 	KillTextSource(item);
 	item = FindTextSource(source = XawTextGetSource(textwindow), NULL);
@@ -277,30 +271,45 @@ DoSave(Widget w, XtPointer client_data, XtPointer call_data)
     }
     else if (item && !(item->flags & CHANGED_BIT)) {
 	if (!double_click || (dc_state && dc_state != DC_SAVE)) {
-	    XeditPrintf("Save: No changes need to be saved, "
-			"Save again to override.\n");
+	    XmuSnprintf(buffer, sizeof(buffer), "%s%s",
+			"Save: No changes need to be saved, "
+			"save again to override", nothing_saved);
 	    Feep();
 	    double_click = TRUE;
 	    dc_state = DC_SAVE;
 	    AddDoubleClickCallback(XawTextGetSource(textwindow), True);
-	    return; 
+	    goto error;
 	}
 	double_click = FALSE;
 	dc_state = 0;
     }
 
     file_access = CheckFilePermissions(filename, &exists);
+    if (exists) {
+	if (stat(filename, &st) != 0) {
+	    XmuSnprintf(buffer, sizeof(buffer), "%s%s%s",
+			"Save: cannot stat ", name, nothing_saved);
+	    goto error;
+	}
+	else if (!S_ISREG(st.st_mode)) {
+	    XmuSnprintf(buffer, sizeof(buffer), "%s%s%s%s",
+			"Save: file ", name, "is not a regular file",
+			nothing_saved);
+	    goto error;
+	}
+    }
+
     if (!item || strcmp(item->filename, filename)) {
 	if (file_access == WRITE_OK && exists) {
 	    if (!double_click || (dc_state && dc_state != DC_CLOBBER)) {
-		XeditPrintf("Save: file %s already exists, "
-			    "Save again to overwrite it -- nothing saved.\n",
-			    name);
+		XmuSnprintf(buffer, sizeof(buffer), "%s%s%s%s",
+			    "Save: file ", name, " already exists, "
+			    "save again to override", nothing_saved);
 		Feep();
 		double_click = TRUE;
 		dc_state = DC_CLOBBER;
 		AddDoubleClickCallback(XawTextGetSource(textwindow), True);
-		return;
+		goto error;
 	    }
 	    double_click = FALSE;
 	    dc_state = 0;
@@ -325,18 +334,28 @@ DoSave(Widget w, XtPointer client_data, XtPointer call_data)
 	    Feep();
 	    break;
 	case WRITE_OK:
+	    if (item && item->mtime && exists && item->mtime < st.st_mtime) {
+		if (!double_click || (dc_state && dc_state != DC_NEWER)) {
+		    XmuSnprintf(buffer, sizeof(buffer), "%s%s",
+				"Save: Newer file exists, "
+				"save again to override", nothing_saved);
+		    Feep();
+		    double_click = TRUE;
+		    dc_state = DC_NEWER;
+		    AddDoubleClickCallback(XawTextGetSource(textwindow), True);
+		    goto error;
+		}
+		double_click = FALSE;
+		dc_state = 0;
+	    }
+
 	    if (XawAsciiSaveAsFile(source, filename)) {
 		int i;
 		Arg args[1];
-		char label_buf[BUFSIZ];
 
-		/* Keep file protection mode */
-		if (item && item->mode)
-		    chmod(filename, item->mode);
-
-		XmuSnprintf(label_buf, sizeof(label_buf),
+		XmuSnprintf(buffer, sizeof(buffer),
 			    "%s       Read - Write", name);
-		XtSetArg(args[0], XtNlabel, label_buf);
+		XtSetArg(args[0], XtNlabel, buffer);
 		for (i = 0; i < 3; i++)
 		    if (XawTextGetSource(texts[i]) == source)
 			XtSetValues(labels[i], args, 1);
@@ -377,6 +396,15 @@ DoSave(Widget w, XtPointer client_data, XtPointer call_data)
 		    XtAddCallback(item->source, XtNcallback, SourceChanged,
 				  (XtPointer)item);
 		}
+
+		/* Keep file protection mode */
+		if (item->mode)
+		    chmod(filename, item->mode);
+
+		/* Remember time of last modification */
+		if (stat(filename, &st) == 0)
+		    item->mtime = st.st_mtime;
+
 		item->flags |= EXISTS_BIT;
 		ResetSourceChanged(item);
 	    }
@@ -389,6 +417,11 @@ DoSave(Widget w, XtPointer client_data, XtPointer call_data)
 	    Feep();
 	    break;
     }
+
+    return;
+error:
+    XeditPrintf("%s", buffer);
+    Feep();
 }
 
 /*ARGSUSED*/
@@ -506,8 +539,10 @@ ReallyDoLoad(char *name, char *filename)
 	if (exists && file_access == WRITE_OK) {
 	    struct stat st;
 
-	    if (stat(item->filename, &st) == 0)
+	    if (stat(item->filename, &st) == 0) {
 		item->mode = st.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO);
+		item->mtime = st.st_mtime;
+	    }
 	}
 	SwitchTextSource(item);
 	ResetSourceChanged(item);
