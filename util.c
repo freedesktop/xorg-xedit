@@ -578,6 +578,8 @@ XeditFocus(Widget w, XEvent *event, String *params, Cardinal *num_params)
 	XtSetArg(args[0], XtNstring, NULL);
 
     XtSetValues(filenamewindow, args, 1);
+
+    line_edit = False;
 }
 
 void
