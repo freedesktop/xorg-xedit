@@ -54,15 +54,15 @@
 ;; syntax-p, the entry is removed.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar *auto-modes* '(
-    ("\\.(c|cc|C|cxx|cpp|h|hpp|bm|xbm|xpm|l|y|h\\.in)$"
+    ("\\.(c|cc|C|cxx|cpp|h|hpp|bm|xbm|xpm|y|h\\.in)$"
 	"C/C++"		"c"	. *c-mode*)
-    ("\\.(li?sp|scm)$"
+    ("\\.(l|li?sp|scm)$"
 	"Lisp/Scheme"	"lisp"	. *lisp-mode*)
     ("\\.sh$"
 	"Unix shell"	"sh"	. *sh-mode*)
     ("\\.(diff|patch)"
 	"Patch file"	"patch"	. *patch-mode*)
-    ("[Mm]akefile.*|\\.mk$"
+    ("/[Mm]akefile.*|\\.mk$"
 	"Makefile"	"make"	. *make-mode*)
     ("\\.(ac|in|m4)$"
 	"Autotools"	"auto"	. *auto-mode*)
@@ -80,9 +80,9 @@
 	"Man page"	"man"	. *man-mode*)
     ("app-defaults/\\w+|\\u[A-Za-z0-9_-]+\\.ad"
 	"X resource"	"xrdb"	. *xrdb-mode*)
-    ("\\<(XF86Config[^/]*|xorg.conf$)"
+    ("\\<(XF86Config|xorg.conf)[^/]*"
 	"XF86Config"	"xconf"	. *xconf-mode*)
-    ("\\<(XFree86|Xorg)\\.\\d+\\.log$"
+    ("\\<(XFree86|Xorg)\\.\\d+\\.log(\\..*|$)"
 	"XFree86 log"	"xlog"	. *xlog-mode*)
     ("Imakefile|(\\.(cf|rules|tmpl|def)$)"
 	"X imake"	"imake"	. *imake-mode*)
