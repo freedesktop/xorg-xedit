@@ -115,6 +115,7 @@ xedit_SOURCES =	\
         options.c \
 	tags.c \
         util.c \
+	util.h \
         xedit.c \
 	xedit.h
 
