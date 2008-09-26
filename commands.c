@@ -93,24 +93,10 @@ static int dc_state;
 static void
 AddDoubleClickCallback(Widget w, Bool state)
 {
-  Arg args[1];
-  static XtCallbackRec cb[] = { {NULL, NULL}, {NULL, NULL} };
-
-  if (XtIsSubclass(w, asciiSrcObjectClass)) {
-      if (state)
-	  XtAddCallback(w, XtNcallback, ResetDC, NULL);
-      else
-	  XtRemoveCallback(w, XtNcallback, ResetDC, NULL);
-  }
-  else {
-      if (state)
-	  cb[0].callback = ResetDC;
-      else
-	  cb[0].callback = NULL;
-
-      XtSetArg(args[0], XtNcallback, cb);
-      XtSetValues(w, args, ONE);
-  }
+    if (state)
+	XtAddCallback(w, XtNcallback, ResetDC, NULL);
+    else
+	XtRemoveCallback(w, XtNcallback, ResetDC, NULL);
 }
   
 /*	Function Name: ResetDC
