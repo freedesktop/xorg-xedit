@@ -167,20 +167,25 @@ APPDEFAULTFILES = \
         app-defaults/Xedit-color \
 	app-defaults/Xedit
 
+$(APPDEFAULTFILES): appsubdir
+
+.PHONY: appsubdir
+
+# Ensure ./app-defaults exists, avoiding race condition for parallel jobs
+appsubdir:
+	test -d app-defaults || mkdir app-defaults
+
 if USE_XPRINT
 app-defaults/Xedit.ad: 
-	test -d app-defaults || mkdir app-defaults
 	cp $(top_srcdir)/app-defaults/Xedit-xprint.ad app-defaults/Xedit.ad
 else
 app-defaults/Xedit.ad:
-	test -d app-defaults || mkdir app-defaults
 	cp $(top_srcdir)/app-defaults/Xedit-noxprint.ad app-defaults/Xedit.ad
 endif
 
 SUFFIXES = .ad 
 
 .ad:
-	test -d app-defaults || mkdir app-defaults
 	cp $< $@
 
 appdefaultdir = @appdefaultdir@
