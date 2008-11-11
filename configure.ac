@@ -41,9 +41,12 @@ AC_ARG_ENABLE(xprint,
 AM_CONDITIONAL(USE_XPRINT, test x$enable_xprint = xyes)
 if test x$enable_xprint = xyes; then
    PKG_CHECK_MODULES(PKGDEPS, xprintutil xp xaw8)
+   print_noprint=xprint
 else
    PKG_CHECK_MODULES(PKGDEPS, xaw7)
+   print_noprint=noxprint
 fi
+AC_CONFIG_LINKS([app-defaults/Xedit:app-defaults/Xedit-$print_noprint])
 
 AC_ARG_WITH(lispdir, AS_HELP_STRING([--with-lispdir=PATH],
 	    [Directory to install lisp files (default: $libdir/X11/xedit/lisp)]),

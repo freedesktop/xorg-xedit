@@ -161,37 +161,12 @@ lisp_re_tests_LDADD = -L. -lre
 lisp_re_tests_SOURCES = lisp/re/tests.c
 
 
-# App default files  (*.ad)
-
-APPDEFAULTFILES = \
-        app-defaults/Xedit-color \
-	app-defaults/Xedit
-
-$(APPDEFAULTFILES): appsubdir
-
-.PHONY: appsubdir
-
-# Ensure ./app-defaults exists, avoiding race condition for parallel jobs
-appsubdir:
-	test -d app-defaults || mkdir app-defaults
-
-if USE_XPRINT
-app-defaults/Xedit.ad: 
-	cp $(top_srcdir)/app-defaults/Xedit-xprint.ad app-defaults/Xedit.ad
-else
-app-defaults/Xedit.ad:
-	cp $(top_srcdir)/app-defaults/Xedit-noxprint.ad app-defaults/Xedit.ad
-endif
-
-SUFFIXES = .ad 
-
-.ad:
-	cp $< $@
+# App default files
 
 appdefaultdir = @appdefaultdir@
-appdefault_DATA = $(APPDEFAULTFILES)
-
-CLEANFILES = $(APPDEFAULTFILES) app-defaults/Xedit.ad
+appdefault_DATA = \
+        app-defaults/Xedit-color \
+	app-defaults/Xedit
 
 lispdir = $(LISPDIR)
 dist_lisp_DATA = ${srcdir}/lisp/modules/lisp.lsp \
@@ -221,9 +196,9 @@ dist_progmodes_DATA = \
 appman_PRE = xedit.man
 
 EXTRA_DIST = \
-	app-defaults/Xedit-color.ad \
-	app-defaults/Xedit-xprint.ad \
-	app-defaults/Xedit-noxprint.ad \
+	app-defaults/Xedit-color \
+	app-defaults/Xedit-xprint \
+	app-defaults/Xedit-noxprint \
 	app-defaults/Xedit-sample \
 	lisp/README \
 	lisp/TODO \
@@ -251,7 +226,7 @@ appmandir = $(APP_MAN_DIR)
 appman_DATA = $(appman_PRE:man=@APP_MAN_SUFFIX@)
 
 EXTRA_DIST += $(appman_PRE)
-CLEANFILES += $(appman_DATA)
+CLEANFILES = $(appman_DATA)
 
 SED = sed
 
@@ -272,7 +247,7 @@ MAN_SUBSTS = \
 	-e 's|__miscmansuffix__|$(MISC_MAN_SUFFIX)|g' \
 	-e 's|__filemansuffix__|$(FILE_MAN_SUFFIX)|g'
 
-SUFFIXES += .$(APP_MAN_SUFFIX) .man
+SUFFIXES = .$(APP_MAN_SUFFIX) .man
 
 .man.$(APP_MAN_SUFFIX):
 	sed $(MAN_SUBSTS) < $< > $@
