@@ -1189,7 +1189,7 @@ DirWindowCB(Widget w, XtPointer user_data, XtPointer call_data)
 	    Feep();
     }
     else {
-	(void)ReallyDoLoad(path, path);
+	(void)ReallyDoLoad(path, ResolveName(path));
 	SwitchDirWindow(False);
 	XtSetKeyboardFocus(topwindow, textwindow);
     }
