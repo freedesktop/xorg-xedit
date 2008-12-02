@@ -734,6 +734,7 @@ FindFile(Widget w, XEvent *event, String *params, Cardinal *num_params)
     XawTextPosition end = XawTextSourceScan(XawTextGetSource(filenamewindow),
 					    0, XawstAll, XawsdRight, 1, True);
 
+    slash = NULL;
     if (!line_edit) {
 	string = GetString(filenamewindow);
 	if (string)
@@ -741,7 +742,6 @@ FindFile(Widget w, XEvent *event, String *params, Cardinal *num_params)
     }
     else {
 	string = "";
-	slash = NULL;
 	line_edit = False;
     }
 

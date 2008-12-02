@@ -26,6 +26,10 @@ AC_INIT(xedit,[1.1.2], [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg]
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
 
+# Require xorg-macros version 1.2.0 or newer for XORG_CHANGELOG macro
+m4_ifndef([XORG_MACROS_VERSION], [AC_FATAL([must install xorg-macros 1.2 or later before running autoconf/autogen])])
+XORG_MACROS_VERSION(1.2)
+
 AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
@@ -71,5 +75,7 @@ AC_SUBST(appdefaultdir)
 
 XORG_MANPAGE_SECTIONS
 XORG_RELEASE_VERSION
+XORG_CWARNFLAGS
+XORG_CHANGELOG
 
 AC_OUTPUT([Makefile])

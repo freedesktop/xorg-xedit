@@ -27,7 +27,7 @@ noinst_PROGRAMS = lisp/lsp lisp/re/tests
 #    libmp.a
 #
 
-libmp_a_CFLAGS =
+libmp_a_CFLAGS = $(CWARNFLAGS)
 libmp_a_SOURCES = \
 	lisp/mp/mp.c	\
 	lisp/mp/mp.h	\
@@ -38,7 +38,7 @@ libmp_a_SOURCES = \
 #    liblisp.a
 #
 
-liblisp_a_CFLAGS = -I$(top_srcdir)/lisp/re -I$(top_srcdir)/lisp/mp -DLISP -DLISPDIR=\"$(LISPDIR)\" $(PKGDEPS_CFLAGS)
+liblisp_a_CFLAGS = $(CWARNFLAGS) -I$(top_srcdir)/lisp/re -I$(top_srcdir)/lisp/mp -DLISP -DLISPDIR=\"$(LISPDIR)\" $(PKGDEPS_CFLAGS)
 liblisp_a_SOURCES = \
 	lisp/bytecode.c \
 	lisp/bytecode.h \
@@ -91,7 +91,7 @@ endif
 #     libre.a
 #
 
-libre_a_CFLAGS = 
+libre_a_CFLAGS = $(CWARNFLAGS)
 libre_a_SOURCES = \
 	lisp/re/re.c \
 	lisp/re/rec.c \
@@ -103,7 +103,7 @@ libre_a_SOURCES = \
 #     xedit
 #   
 xedit_DEPENDENCIES = liblisp.a libmp.a libre.a
-xedit_CFLAGS = $(PKGDEPS_CFLAGS) -I$(top_srcdir)/lisp/re -D_BSD_SOURCE -DXEDIT
+xedit_CFLAGS = $(CWARNFLAGS) $(PKGDEPS_CFLAGS) -I$(top_srcdir)/lisp/re -D_BSD_SOURCE -DXEDIT
 xedit_LDADD = -L. -lre -llisp -lmp $(PKGDEPS_LIBS) -lm
 
 xedit_SOURCES =	\
@@ -140,7 +140,7 @@ endif
 
 # lisp/lsp
 lisp_lsp_DEPENDENCIES = liblisp.a libre.a libmp.a
-lisp_lsp_CFLAGS = -I$(top_srcdir)/lisp/re -I$(top_srcdir)/lisp/mp -DLISP -DLISPDIR=\"@LISPDIR@\" -D_BSD_SOURCE
+lisp_lsp_CFLAGS = $(CWARNFLAGS) -I$(top_srcdir)/lisp/re -I$(top_srcdir)/lisp/mp -DLISP -DLISPDIR=\"@LISPDIR@\" -D_BSD_SOURCE
 lisp_lsp_LDADD = -L. -llisp -lre -lmp -lm
 lisp_lsp_SOURCES = \
 	hash.c \
@@ -156,7 +156,7 @@ endif
 
 # re/tests
 lisp_re_tests_DEPENDENCIES = libre.a
-lisp_re_tests_CFLAGS = -I$(top_srcdir)/lisp/re -D_BSD_SOURCE
+lisp_re_tests_CFLAGS = $(CWARNFLAGS) -I$(top_srcdir)/lisp/re -D_BSD_SOURCE
 lisp_re_tests_LDADD = -L. -lre
 lisp_re_tests_SOURCES = lisp/re/tests.c
 
@@ -258,6 +258,6 @@ MAINTAINERCLEANFILES = ChangeLog
 .PHONY: ChangeLog
 
 ChangeLog:
-	(GIT_DIR=$(top_srcdir)/.git git log > .changelog.tmp && mv .changelog.tmp ChangeLog; rm -f .changelog.tmp) || (touch ChangeLog; echo 'git directory not found: installing possibly empty changelog.' >&2)
+	$(CHANGELOG_CMD)
 
 dist-hook: ChangeLog
