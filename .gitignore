@@ -21,3 +21,8 @@ stamp-h1
 xedit
 xedit.1
 *~
+*.a
+*.o
+xedit-*.tar.*
+ChangeLog
+tags

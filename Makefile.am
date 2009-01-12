@@ -163,6 +163,8 @@ lisp_re_tests_SOURCES = lisp/re/tests.c
 
 # App default files
 
+DISTCHECK_CONFIGURE_FLAGS = --with-appdefaultdir=\$${datadir}/X11/app-defaults
+
 appdefaultdir = @appdefaultdir@
 appdefault_DATA = \
         app-defaults/Xedit-color \
