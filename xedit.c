@@ -133,9 +133,13 @@ main(int argc, char *argv[])
     FileAccess		file_access;
     Widget		source;
     XtAppContext	appcon;
-    unsigned int	i, num_loaded, lineno;
+    Boolean		show_dir;
+    xedit_flist_item	*first_item;
+    unsigned int	i, lineno;
 
-    num_loaded = lineno = 0;
+    lineno = 0;
+    show_dir = FALSE;
+    first_item = NULL;
 
 #ifdef INCLUDE_XPRINT_SUPPORT
     XtSetLanguageProc(NULL, NULL, NULL);
@@ -205,7 +209,7 @@ main(int argc, char *argv[])
 		char	*endptr;
 
 		lineno = strtol(argv[i], &endptr, 10);
-		/* Don't warn or anything about incorrect input? */
+		/* Don't warn about incorrect input? */
 		if (*endptr)
 		    lineno = 0;
 		continue;
@@ -218,7 +222,7 @@ main(int argc, char *argv[])
 	    num_args = 0;
 	    if (stat(filename, &st) == 0 && !S_ISREG(st.st_mode)) {
 		if (S_ISDIR(st.st_mode)) {
-		    if (!num_loaded) {
+		    if (!first_item) {
 			char path[BUFSIZ + 1];
 
 			strncpy(path, filename, sizeof(path) - 2);
@@ -233,7 +237,7 @@ main(int argc, char *argv[])
 			XtSetValues(dirlabel, args, 1);
 			SwitchDirWindow(True);
 			DirWindowCB(dirwindow, path, NULL);
-			++num_loaded;
+			show_dir = True;
 		    }
 		    continue;
 		}
@@ -283,9 +287,8 @@ main(int argc, char *argv[])
 		    item->mode = st.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO);
 		    item->mtime = st.st_mtime;
 		}
-		if (!num_loaded)
-		    SwitchTextSource(item);
-		++num_loaded;
+		if (!first_item && !show_dir)
+		    first_item = item;
 		ResetSourceChanged(item);
 	    }
 	}
@@ -302,11 +305,12 @@ main(int argc, char *argv[])
 	XtConvertAndStore(flist.popup, XtRString, &from, XtRBitmap, &to);
     }
 
-    if (num_loaded == 0) {
+    if (first_item == NULL) {
 	XtSetKeyboardFocus(topwindow, filenamewindow);
 	XtVaSetValues(textwindow, XtNwrap, XawtextWrapLine, NULL);
     }
     else {
+	SwitchTextSource(first_item);
 	XtSetKeyboardFocus(topwindow, textwindow);
 	if (lineno) {
 	    XawTextPosition position;
