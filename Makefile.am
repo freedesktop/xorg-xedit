@@ -127,17 +127,6 @@ if NEED_STRCASECMP
 xedit_SOURCES += strcasecmp.c
 endif
 
-if USE_XPRINT
-xedit_CFLAGS += -DINCLUDE_XPRINT_SUPPORT
-
-xedit_SOURCES += \
-        print.c \
-        printdialog.c \
-        printdialog.h \
-        printdialogprivates.h \
-        print.h
-endif
-
 # lisp/lsp
 lisp_lsp_DEPENDENCIES = liblisp.a libre.a libmp.a
 lisp_lsp_CFLAGS = $(CWARNFLAGS) -I$(top_srcdir)/lisp/re -I$(top_srcdir)/lisp/mp -DLISP -DLISPDIR=\"@LISPDIR@\" -D_BSD_SOURCE
