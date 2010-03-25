@@ -41,9 +41,6 @@ AC_PROG_RANLIB
 PKG_PROG_PKG_CONFIG
 
 PKG_CHECK_MODULES(PKGDEPS, xaw7)
-print_noprint=noxprint
-
-AC_CONFIG_LINKS([app-defaults/Xedit:app-defaults/Xedit-$print_noprint])
 
 AC_ARG_WITH(lispdir, AS_HELP_STRING([--with-lispdir=PATH],
 	    [Directory to install lisp files (default: $libdir/X11/xedit/lisp)]),

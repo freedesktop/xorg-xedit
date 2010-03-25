@@ -188,8 +188,7 @@ appman_PRE = xedit.man
 
 EXTRA_DIST = \
 	app-defaults/Xedit-color \
-	app-defaults/Xedit-xprint \
-	app-defaults/Xedit-noxprint \
+	app-defaults/Xedit \
 	app-defaults/Xedit-sample \
 	lisp/README \
 	lisp/TODO \
