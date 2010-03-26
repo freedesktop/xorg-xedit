@@ -40,9 +40,6 @@ static XtActionsRec actions[] = {
 {"quit", QuitAction},
 {"save-file", SaveFile},
 {"load-file", LoadFile},
-#ifdef INCLUDE_XPRINT_SUPPORT
-{"print-file", PrintFile},
-#endif /* INCLUDE_XPRINT_SUPPORT */
 {"find-file", FindFile},
 {"cancel-find-file", CancelFindFile},
 {"file-completion", FileCompletion},
@@ -118,13 +115,6 @@ static XtResource resources[] = {
 
 #undef Offset
 
-#ifdef INCLUDE_XPRINT_SUPPORT
-String fallback_resources[] = {
-    "*international:     True", /* set this globally for ALL widgets to avoid wiered crashes */
-    NULL
-};
-#endif
-
 int
 main(int argc, char *argv[])
 {
@@ -141,15 +131,8 @@ main(int argc, char *argv[])
     show_dir = FALSE;
     first_item = NULL;
 
-#ifdef INCLUDE_XPRINT_SUPPORT
-    XtSetLanguageProc(NULL, NULL, NULL);
-#endif
     topwindow = XtAppInitialize(&appcon, "Xedit", NULL, 0, &argc, argv,
-#ifdef INCLUDE_XPRINT_SUPPORT
-				fallback_resources,
-#else
 				NULL,
-#endif
 				NULL, 0);
 
     XtAppAddActions(appcon, actions, XtNumber(actions));
@@ -345,9 +328,6 @@ makeButtonsAndBoxes(Widget parent)
 	MakeCommandButton(b_row, "quit", DoQuit);
 	MakeCommandButton(b_row, "save", DoSave);
 	MakeCommandButton(b_row, "load", DoLoad);
-#ifdef INCLUDE_XPRINT_SUPPORT
-	MakeCommandButton(b_row, "print", DoPrint);
-#endif /* INCLUDE_XPRINT_SUPPORT */
 	filenamewindow = MakeStringBox(b_row, "filename", NULL);
     }
     hintswindow = XtCreateManagedWidget("bc_label", labelWidgetClass,
@@ -393,14 +373,10 @@ makeButtonsAndBoxes(Widget parent)
     textwindow =  XtCreateManagedWidget(editWindow, asciiTextWidgetClass,
 					vpanes[0], arglist, num_args);
 
-#ifdef INCLUDE_XPRINT_SUPPORT
-    international = True;
-#else
     /* Get international resource value form the textwindow */
     num_args = 0;
     XtSetArg(arglist[num_args], XtNinternational, &international);	++num_args;
     XtGetValues(textwindow, arglist, num_args);
-#endif
 
     num_args = 0;
     XtSetArg(arglist[num_args], XtNtype, XawAsciiFile);			++num_args;
