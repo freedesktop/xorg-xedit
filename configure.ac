@@ -40,7 +40,7 @@ AC_PROG_INSTALL
 AC_PROG_RANLIB
 PKG_PROG_PKG_CONFIG
 
-PKG_CHECK_MODULES(PKGDEPS, xaw7)
+PKG_CHECK_MODULES(PKGDEPS, xaw7 xmu xt x11)
 
 AC_ARG_WITH(lispdir, AS_HELP_STRING([--with-lispdir=PATH],
 	    [Directory to install lisp files (default: $libdir/X11/xedit/lisp)]),
@@ -55,9 +55,6 @@ AC_CHECK_FUNC(strcasecmp, [], [have_strcasecmp=yes])
 AM_CONDITIONAL(NEED_STRCASECMP, test x$have_strcasecmp = xyes)
 AC_CHECK_FUNC(unsetenv, [], [have_unsetenv=yes])
 AM_CONDITIONAL(NEED_UNSETENV, test x$have_unsetenv = xyes)
-
-AC_SUBST(PKGDEPS_CFLAGS)
-AC_SUBST(PKGDEPS_LIBS)
 
 PKG_CHECK_MODULES(APPDEFS, xt)
 xt_appdefaultdir=`$PKG_CONFIG --variable=appdefaultdir xt`
