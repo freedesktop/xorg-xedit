@@ -270,7 +270,7 @@ default is to use ``~'' as the suffix.
 .TP 8
 .B positionFormat (\fPClass\fB Format)
 Specifies a format string used to display the cursor position.  This
-string uses printf(3) like notation, where
+string uses printf(__libmansuffix__) like notation, where
 .B %l
 prints the line number,
 .B %c
@@ -330,7 +330,7 @@ Specifies a set of characters that can be part of a legal word. The
 .B ispell.ispellCommand (\fPClass \fBispell.CommandLine)
 The path to the ispell program, and possibly, additional arguments. You don't
 need to specify the ``-w'' option, neither the ``-a'' option.
-Refer to the \fIispell\fP(1) manpage for more information on ispell options.
+Refer to the \fIispell\fP(__appmansuffix__) manpage for more information on ispell options.
 .TP 8
 .B ispell.formatting (\fPClass \fPispell.TextFormat)
 Specifies which text formatting to use while spell checking the file. The
@@ -431,7 +431,7 @@ stored in the RESOURCE_MANAGER property.
 specifies required resources
 .SH "SEE ALSO"
 .IR X (__miscmansuffix__),
-.IR xrdb (1),
+.IR xrdb (__appmansuffix__),
 .I "Athena Widget Set"
 .SH RESTRICTIONS
 Xedit is not a replacement to Emacs.
