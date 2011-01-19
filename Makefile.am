@@ -19,6 +19,7 @@
 #  TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 #  PERFORMANCE OF THIS SOFTWARE.
 
+SUBDIRS = man
 bin_PROGRAMS = xedit
 noinst_LIBRARIES = liblisp.a libre.a libmp.a
 noinst_PROGRAMS = lisp/lsp lisp/re/tests
@@ -184,7 +185,6 @@ dist_progmodes_DATA = \
 	${srcdir}/lisp/modules/progmodes/xlog.lsp \
 	${srcdir}/lisp/modules/progmodes/xrdb.lsp
 
-appman_PRE = xedit.man
 
 EXTRA_DIST = \
 	app-defaults/Xedit-color \
@@ -211,20 +211,7 @@ EXTRA_DIST = \
 	lisp/test/stream.lsp \
 	lisp/test/widgets.lsp
 
-appmandir = $(APP_MAN_DIR)
-
-appman_DATA = $(appman_PRE:man=@APP_MAN_SUFFIX@)
-
-EXTRA_DIST += $(appman_PRE)
 MAINTAINERCLEANFILES = ChangeLog INSTALL
-CLEANFILES = $(appman_DATA)
-
-SUFFIXES = .$(APP_MAN_SUFFIX) .man
-
-# String replacements in MAN_SUBSTS now come from xorg-macros.m4 via configure
-.man.$(APP_MAN_SUFFIX):
-	$(AM_V_GEN)$(SED) $(MAN_SUBSTS) < $< > $@
-
 
 .PHONY: ChangeLog INSTALL
 
