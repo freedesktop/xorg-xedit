@@ -39,7 +39,7 @@ AM_PROG_CC_C_O
 AC_PROG_RANLIB
 PKG_PROG_PKG_CONFIG
 
-PKG_CHECK_MODULES(PKGDEPS, xaw7 xmu xt x11)
+PKG_CHECK_MODULES(PKGDEPS, xaw7 xmu xt >= 1.0 x11)
 
 AC_ARG_WITH(lispdir, AS_HELP_STRING([--with-lispdir=PATH],
 	    [Directory to install lisp files (default: $libdir/X11/xedit/lisp)]),
