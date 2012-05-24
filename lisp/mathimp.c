@@ -460,7 +460,7 @@ static char *fatal_object_error_strings[] = {
 static void
 fatal_error(int num)
 {
-    LispDestroy(fatal_error_strings[num]);
+    LispDestroy("%s", fatal_error_strings[num]);
 }
 
 static void
