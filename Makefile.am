@@ -85,7 +85,8 @@ liblisp_a_SOURCES = \
 	lisp/xedit.h
 
 if NEED_UNSETENV
-liblisp_a_SOURCES += lisp/env.c
+liblisp_a_SOURCES += lisp/getenv.c
+liblisp_a_SOURCES += lisp/setenv.c
 endif
 
 #
