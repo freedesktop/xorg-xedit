@@ -194,7 +194,6 @@ EXTRA_DIST = \
 	lisp/README \
 	lisp/TODO \
 	lisp/compile.c \
-	lisp/env.c \
 	lisp/mathimp.c \
 	lisp/modules/psql.c \
 	lisp/modules/x11.c \
