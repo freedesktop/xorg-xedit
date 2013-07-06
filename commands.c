@@ -29,9 +29,6 @@
 #include <X11/Xfuncs.h>
 #include <X11/Xos.h>
 #include "xedit.h"
-#ifdef CRAY
-#include <unistd.h>
-#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
@@ -162,7 +159,7 @@ makeBackupName(String buf, String filename, unsigned len)
     return (strcmp(filename, buf) ? buf : NULL);
 }
   
-#if defined(USG) && !defined(CRAY)
+#if defined(USG)
 int rename (from, to)
     char *from, *to;
 {
