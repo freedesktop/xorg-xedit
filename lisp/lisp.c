@@ -158,13 +158,7 @@ static INLINE void LispProt(LispObj*);
 
 static LispObj *LispCheckNeedProtect(LispObj*);
 
-static
-#ifdef SIGNALRETURNSINT
-int
-#else
-void
-#endif
-LispSignalHandler(int);
+static void LispSignalHandler(int);
 
 /*
  * Initialization
@@ -5009,17 +5003,10 @@ LispUpdateResults(LispObj *cod, LispObj *res)
     LispSetVar(RES[0], res);
 }
 
-#ifdef SIGNALRETURNSINT
-int
-#else
 void
-#endif
 LispSignalHandler(int signum)
 {
     LispSignal(signum);
-#ifdef SIGNALRETURNSINT
-    return (0);
-#endif
 }
 
 void

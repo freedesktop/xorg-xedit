@@ -388,13 +388,8 @@ struct _LispMac {
 #endif
     LispObj *prolist;		/* protect objects list */
 
-#ifdef SIGNALRETURNSINT
-    int (*sigint)(int);
-    int (*sigfpe)(int);
-#else
     void (*sigint)(int);
     void (*sigfpe)(int);
-#endif
 
     int destroyed;		/* reached LispDestroy, used by unwind-protect */
     int running;		/* there is somewhere to siglongjmp */
