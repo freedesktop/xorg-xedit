@@ -24,7 +24,7 @@ dnl Process this file with autoconf to create configure.
 AC_PREREQ([2.60])
 AC_INIT([xedit], [1.2.1],
         [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg], [xedit])
-AM_INIT_AUTOMAKE([foreign dist-bzip2])
+AM_INIT_AUTOMAKE([foreign dist-bzip2 subdir-objects])
 
 # Require X.Org macros 1.8 or later for MAN_SUBSTS set by XORG_MANPAGE_SECTIONS
 m4_ifndef([XORG_MACROS_VERSION],
@@ -34,7 +34,6 @@ XORG_DEFAULT_OPTIONS
 
 AC_CONFIG_HEADERS([config.h])
 
-AM_PROG_CC_C_O
 AC_PROG_RANLIB
 PKG_PROG_PKG_CONFIG
 
