@@ -158,20 +158,6 @@ makeBackupName(String buf, String filename, unsigned len)
 
     return (strcmp(filename, buf) ? buf : NULL);
 }
-  
-#if defined(USG)
-int rename (from, to)
-    char *from, *to;
-{
-    (void) unlink (to);
-    if (link (from, to) == 0) {
-        unlink (from);
-        return 0;
-    } else {
-        return -1;
-    }
-}
-#endif
 
 /*ARGSUSED*/
 void
