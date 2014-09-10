@@ -187,7 +187,7 @@ DoSave(Widget w, XtPointer client_data, XtPointer call_data)
     Widget source = XawTextGetSource(textwindow);
     char buffer[BUFSIZ];
     struct stat st;
-    static char *nothing_saved = " -- nothing saved.\n";
+    static const char *nothing_saved = " -- nothing saved.\n";
 
     if (!filename) {
 	XmuSnprintf(buffer, sizeof(buffer), "%s%s",
