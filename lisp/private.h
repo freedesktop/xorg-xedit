@@ -68,6 +68,7 @@
 	(LispObj *)lisp__data.features->data.atom->property->value :	\
 	NIL)
 #define PACK	lisp__data.packlist
+#undef PACKAGE /* avoid conflicts with autoconf's #define in config.h */
 #define PACKAGE	lisp__data.package->data.atom->property->value
 #define MOD	lisp__data.modlist
 #define COD	lisp__data.codlist

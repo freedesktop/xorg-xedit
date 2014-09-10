@@ -29,6 +29,10 @@
 
 /* $XFree86: xc/programs/xedit/lisp/lisp.c,v 1.87tsi Exp $ */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 #ifdef sun
@@ -43,27 +47,6 @@
 
 #ifndef X_NOT_POSIX
 #include <unistd.h>	/* for sysconf(), and getpagesize() */
-#endif
-
-#if defined(linux)
-#define HAS_GETPAGESIZE
-#define HAS_SC_PAGESIZE	/* _SC_PAGESIZE may be an enum for Linux */
-#endif
-
-#if defined(CSRG_BASED)
-#define HAS_GETPAGESIZE
-#endif
-
-#if defined(sun)
-#define HAS_GETPAGESIZE
-#endif
-
-#if defined(QNX4)
-#define HAS_GETPAGESIZE
-#endif
-
-#if defined(__QNXNTO__)
-#define HAS_SC_PAGESIZE
 #endif
 
 #include "lisp/bytecode.h"
@@ -636,7 +619,7 @@ LispGetPageSize(void)
 
     /* Try each supported method in the preferred order */
 
-#if defined(_SC_PAGESIZE) || defined(HAS_SC_PAGESIZE)
+#if defined(_SC_PAGESIZE) || defined(HAVE_DECL__SC_PAGESIZE)
     pagesize = sysconf(_SC_PAGESIZE);
 #endif
 
@@ -645,7 +628,7 @@ LispGetPageSize(void)
 	pagesize = sysconf(_SC_PAGE_SIZE);
 #endif
 
-#ifdef HAS_GETPAGESIZE
+#ifdef HAVE_GETPAGESIZE
     if (pagesize == -1)
 	pagesize = getpagesize();
 #endif

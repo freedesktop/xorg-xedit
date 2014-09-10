@@ -47,6 +47,9 @@ AC_ARG_WITH(lispdir, AS_HELP_STRING([--with-lispdir=PATH],
 LISPDIR=$lispdir
 AC_SUBST(LISPDIR)
 
+AC_CHECK_DECLS([_SC_PAGESIZE])
+AC_CHECK_FUNCS([getpagesize])
+
 AC_CHECK_FUNC(realpath, [], [have_realpath=yes])
 AM_CONDITIONAL(NEED_REALPATH, test x$have_realpath = xyes)
 AC_CHECK_FUNC(strcasecmp, [], [have_strcasecmp=yes])
